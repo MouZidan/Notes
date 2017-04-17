@@ -5,12 +5,12 @@ package com.mou.inc.myapplication;
  */
 
     import android.app.Service;
-import android.content.Intent;
+    import android.content.Context;
+    import android.content.Intent;
 import android.os.*;
 import android.os.Process;
-import android.widget.Toast;
 
-    public class AlarmService extends Service {
+public class AlarmService extends Service {
 
         private Looper mServiceLooper;
         private ServiceHandler mServiceHandler;
@@ -30,7 +30,6 @@ import android.widget.Toast;
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
-            Toast.makeText(this, "onStartCommand", Toast.LENGTH_SHORT).show();
 
             // call a new service handler. The service ID can be used to identify the service
             Message message = mServiceHandler.obtainMessage();
@@ -40,7 +39,7 @@ import android.widget.Toast;
             return START_STICKY;
         }
 
-        protected void showToast(final String msg){
+        protected void showToast(final String msg , final Context context){
             //gets the main thread
 
             Handler handler = new Handler(Looper.getMainLooper());
@@ -48,8 +47,17 @@ import android.widget.Toast;
                 @Override
                 public void run() {
                     // run this code in the main thread
-                  //  Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                    NewNotification.notify(getApplicationContext(),"","");
+                   // Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                    int counter =0;
+                    do{
+                        counter =counter+1;
+
+                        NoteActivity.sendNotify(context);
+
+                    } while(counter==1 && NoteActivity.reminderBoolean ==true && NoteActivity.dailyCurrentDateTimeString.equals(NoteActivity.notifyTimePicker));
+
+
+
                 }
             });
         }

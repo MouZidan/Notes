@@ -28,13 +28,13 @@ public class AlarmIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         AlarmService i =new AlarmService();
 
-            i.showToast("Starting IntentService");
+            i.showToast("Starting IntentService",getApplicationContext());
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            i.showToast("Finishing IntentService");
+            i.showToast("Finishing IntentService",getApplicationContext());
 
     }
 }
