@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:id="@+id/coordinator"
+
+    xmlns:fab="http://schemas.android.com/tools"
+
+    >
+
+
+
+<LinearLayout
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+android:id="@+id/linearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryDark"
+>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:popupTheme="@style/popupTheme"
+        android:elevation="4dp"
+        android:animateLayoutChanges="true"
+
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/editor_background"
+    >
+
+
+
+    <LinearLayout
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+
+   >
+
+        <EditText
+            android:id="@+id/note_et_title"
+            android:paddingEnd="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_cornerstop"
+            android:hint="Enter your title here..."
+            android:maxLength="20"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:paddingRight="40dp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:orientation="vertical"
+        >
+
+        <EditText
+            android:padding="16dp"
+            android:id="@+id/note_et_content"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_cornersbottom"
+            android:ems="10"
+            android:gravity="top"
+            android:textSize="16sp"
+            android:hint="Enter your note..."
+            android:inputType="textMultiLine" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+
+
+</LinearLayout>
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_menu"
+            app:menu_icon="@drawable/ic_add"
+            android:layout_gravity="top|right"
+            app:menu_fab_size="mini"
+            app:menu_colorNormal="@android:color/transparent"
+            app:menu_colorPressed="@android:color/transparent"
+
+            app:menu_showShadow="false"
+            app:menu_openDirection="down"
+            android:layout_marginTop="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:menu_fab_hide_animation="@anim/fab_slide_out_to_right"
+            app:menu_fab_show_animation="@anim/fab_slide_in_from_right"
+            android:layout_alignParentRight="true">
+
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_insertTime"
+                android:onClick="insertTime"
+                app:fab_size="mini"
+                app:fab_colorPressed="@color/background_material_light"
+                android:src="@drawable/ic_date"
+                app:fab_colorNormal="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_alarm"
+                android:src="@drawable/ic_alarm"
+                android:onClick="setReminder"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                app:fab_colorPressed="@color/background_material_light"
+                />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Night"
+                android:onClick="activateNight"
+                app:fab_size="mini"
+                android:src="@drawable/ic_night"
+                app:fab_colorNormal="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                app:fab_colorPressed="@color/background_material_light"
+                />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Center"
+                android:src="@drawable/ic_center"
+
+                android:onClick="activateCenter"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                app:fab_colorPressed="@color/background_material_light"
+                />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Left"
+                android:onClick="activatePasswordDialog"
+                app:fab_size="mini"
+                android:src="@drawable/ic_locksolid"
+
+                app:fab_colorNormal="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                app:fab_colorPressed="@color/background_material_light"
+                />
+        </com.github.clans.fab.FloatingActionMenu>
+
+</FrameLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/bottom_sheet2"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:clipToPadding="true"
+        android:background="@color/colorPrimaryOff"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--hash place-->
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="#Hash"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="zz"
+                android:id="@+id/bottom_sheet_hashtags"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
+                android:padding="5dp"/>
+        </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:gravity="center"
+               android:orientation="vertical">
+               <ProgressBar
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content" />
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="SOON!"
+                   android:textSize="24sp"
+                   />
+           </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

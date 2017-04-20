@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/hard_rounded_corners"
+
+    >
+
+    <SeekBar
+        android:id="@+id/textSize_seekbar"
+        android:layout_width="343dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"/>
+
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color12"
+            android:background="@color/holo_orange_dark"
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color22"
+            android:background="@color/holo_blue_dark"
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color32"
+            android:background="@color/holo_green_dark"
+
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color42"
+            android:background="@color/holo_red_dark"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content"/>
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color11"
+            android:background="@color/holo_orange_dark"
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color21"
+            android:background="@color/holo_blue_dark"
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color31"
+            android:background="@color/holo_green_dark"
+
+            />
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/color41"
+            android:background="@color/holo_red_dark"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+
+
+        >
+
+        <Button
+            android:id="@+id/set_fontsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:text="Set."
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+
+            />
+
+        <Button
+            android:id="@+id/rest_fontsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="default."
+            android:textColor="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+
+
+            />
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

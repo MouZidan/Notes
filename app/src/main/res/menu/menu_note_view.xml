@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    >
+
+
+    <!-- Inside note editor -->
+
+    <!-- UPDATE NOTE -->
+    <item
+        android:enabled="true"
+        android:title="update"
+        android:id="@+id/action_update"
+        android:icon="@drawable/ic_save"
+        android:orderInCategory="0"
+        app:showAsAction="always"
+        />
+
+    <!-- CANCEL THE NOTE -->
+    <item
+        android:enabled="true"
+        android:id="@+id/action_cancel"
+        android:title="cancel"
+        android:icon="@drawable/ic_cancel"
+        android:orderInCategory="10"
+        app:showAsAction="always"
+        />
+
+
+
+    <!-- DropDown-->
+
+    <item
+        android:enabled="true"
+        android:id="@+id/action_delete"
+        android:title="Delete"
+        android:icon="@drawable/ic_delete"
+        android:orderInCategory="20"
+        app:showAsAction="never"
+        />
+    <!-- DropDown-->
+
+    <item
+        android:enabled="true"
+        android:id="@+id/action_font_size"
+        android:title="Change font size"
+        android:icon="@drawable/ic_format_quote_black_24dp"
+        app:showAsAction="always"
+        />
+
+
+
+
+
+
+
+
+</menu>

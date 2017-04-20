@@ -1,0 +1,87 @@
+<resources>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:colorBackground">@color/background_material_light</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryNight</item>
+
+        <item name="android:windowActionBar">@style/InvisibleBackgroundTheme</item>
+        
+    </style>
+
+
+    <style name="MyActionBarLight"  >
+        <item name="android:textColor">@color/colorPrimaryNight</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryNight</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="MyActionBarDark">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimaryNight</item>
+    </style>
+
+
+    <style name="AppThemeDark"  parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBarDark</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryNight</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="InvisibleBackgroundTheme" parent="@android:style/Theme.Translucent">
+        <item name="android:windowActionBar">true</item>
+    </style>
+
+    <style name="Pass" parent="Theme.AppCompat.NoActionBar">
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Fade">
+        <item name="android:windowEnterAnimation">@anim/fadein</item>
+        <item name="android:windowExitAnimation">@anim/fadeout</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+
+    </style>
+
+    <style name="popupTheme" >
+
+        <item name="android:popupBackground">@drawable/rounded_cornersbottom</item>
+    </style>
+
+
+    <style name="CustomDialogHorizontal" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/CustomDialogAnimationH</item>
+    </style>
+    <style name="CustomDialogAnimationH">
+        <item name="android:windowEnterAnimation">@anim/translate_left_side</item>
+        <item name="android:windowExitAnimation">@anim/translate_right_side</item>
+    </style>
+
+
+
+    <style name="CustomDialogVertical" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/CustomDialogAnimationV</item>
+    </style>
+    <style name="CustomDialogAnimationV">
+        <item name="android:windowEnterAnimation">@anim/translate_vertical_open</item>
+        <item name="android:windowExitAnimation">@anim/translate_vertical_close</item>
+    </style>
+
+
+
+</resources>

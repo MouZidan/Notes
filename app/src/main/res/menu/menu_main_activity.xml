@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- NEW NOTE -->
+    <item
+        android:enabled="true"
+        android:title="create"
+        android:id="@+id/action_create"
+        android:icon="@drawable/ic_pen"
+        android:orderInCategory="0"
+        app:showAsAction="always"
+        />
+
+    <!-- SETTINGS -->
+    <item
+        android:enabled="true"
+        android:id="@+id/action_settings"
+        android:title="settings"
+        android:icon="@drawable/ic_settings"
+        android:orderInCategory="10"
+        app:showAsAction="ifRoom"
+        />
+<!-- TESTS
+    <item
+        android:enabled="true"
+        android:id="@+id/testbtn"
+        android:title="settings"
+        android:icon="@drawable/ic_code"
+        android:orderInCategory="10"
+        app:showAsAction="ifRoom"
+        /> -->
+
+</menu>

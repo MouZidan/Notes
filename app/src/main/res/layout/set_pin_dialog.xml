@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff">
+
+    <ImageView
+        android:id="@+id/a"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_locksolid" />
+    <Button
+        android:layout_below="@id/a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/clear_pin"
+        android:text="clear current pin"
+        android:textSize="20sp"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="@color/colorAccent"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
+        />
+
+
+
+
+<LinearLayout
+    android:layout_below="@id/clear_pin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="5dp"
+    >
+
+
+
+    <TextView
+        android:id="@+id/text_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="Set your PIN, you will be asked to enter it every time you open this note."
+        android:textColor="#ff000000"
+        android:textSize="18sp" />
+
+
+
+    <TextView
+        android:id="@+id/pin_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:gravity="center_horizontal"
+        android:textSize="16sp" />
+    <EditText
+        android:id="@+id/set_pin_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:maxLength="8"
+        android:hint="* * * *"
+        android:gravity="center"
+        android:inputType="numberPassword" />
+    <TextView
+        android:id="@+id/note_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/set_pin_dialog"
+        android:layout_centerHorizontal="true"
+
+        android:gravity="center_horizontal"
+        android:text="Confirm your PIN."
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/set_pin_dialog_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:maxLength="8"
+        android:gravity="center"
+        android:hint="* * * *"
+        android:inputType="numberPassword" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:textSize="20sp"
+            android:id="@+id/cancel_btn_dialog"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_below="@+id/text_dialog"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorAccent" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/set_btn_dialog"
+        android:text="SET"
+        android:textSize="20sp"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_below="@+id/text_dialog"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorAccent" />
+
+
+    </LinearLayout>
+</LinearLayout>
+</RelativeLayout>

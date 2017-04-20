@@ -3,27 +3,30 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shadow_rounded"
-    >
+    android:background="@drawable/shadow"
 
+    >
 <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@drawable/hard_rounded_corners"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+
+    >
 
 
     <ListView
+        android:padding="10dp"
+
         android:id="@+id/create_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:headerDividersEnabled="true"
         android:divider="@null"
         android:dividerHeight="0dp"
 
-        >
+   />
 
-
-    </ListView>
 
         <TextView
             android:layout_width="wrap_content"

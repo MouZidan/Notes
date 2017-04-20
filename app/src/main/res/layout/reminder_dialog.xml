@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/a"
+    android:background="@color/colorAccent"
+
+    >
+
+    <ImageView
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_alarm"
+         />
+
+
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+        <ViewSwitcher
+            android:id="@+id/viewSwitcher1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+
+            android:inAnimation="@android:anim/slide_in_left">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/first_view_Rdialog"
+    >
+        <TimePicker
+            android:id="@+id/timepicker_reminder_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+
+</LinearLayout>
+
+ <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+     android:id="@+id/second_view_Rdialog"
+     android:gravity="center"
+     >
+
+
+
+     <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="set a content for your reminder."
+         android:textSize="16sp"
+         android:padding="10sp"
+         android:layout_gravity="center"
+         />
+
+     <EditText
+         android:gravity="center"
+         android:layout_gravity="center_horizontal"
+         android:id="@+id/notify_title_content"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" />
+
+ </LinearLayout>
+        </ViewSwitcher>
+
+        <Button
+            android:id="@+id/view_nextbtn_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="NEXT"
+            android:background="@android:color/transparent"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+
+            />
+        <TextView
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:text="This will set a daily reminder for your Note"
+            />
+
+        <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+
+    >
+
+        <Button
+            android:id="@+id/back_btn_reminder_dialog"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
+            android:background="@android:color/transparent"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/the_PIN"
+            android:textSize="16sp"
+
+            />
+        <Button
+            android:id="@+id/set_btn_reminder_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SET"
+            android:background="@android:color/transparent"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/the_PIN"
+            android:textSize="16sp"
+
+            />
+</LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

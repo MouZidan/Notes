@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/mainlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/texture_bg"
+    android:orientation="vertical"
+    tools:context="com.mou.inc.myapplication.MainActivity"
+
+
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:animateLayoutChanges="true"
+
+        >
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <Button
+        android:id="@+id/sendNotifications"
+        android:onClick="onSendNotificationsButtonClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Sending Notifications Every 2 Hours!"
+        android:visibility="gone"/>
+
+    <ListView
+        android:animateLayoutChanges="true"
+        android:id="@+id/main_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutAnimation="@anim/translate_list"
+        />
+
+</LinearLayout>

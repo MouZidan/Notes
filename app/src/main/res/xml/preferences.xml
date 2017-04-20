@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+
+
+
+
+
+
+
+    <EditTextPreference
+        android:key="userName"
+        android:title="Name your NoteBook"
+        android:summary="Shown in ActionBar, Empty equals default name."
+        android:maxLength="15"
+        android:defaultValue=""
+
+        />
+
+</PreferenceScreen>
+
