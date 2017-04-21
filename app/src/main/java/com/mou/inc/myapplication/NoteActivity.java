@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.BottomSheetBehavior;
@@ -80,6 +81,9 @@ public class NoteActivity extends AppCompatActivity {
     private Boolean mNightBoolean;
     private Boolean mAlignmentBoolean;
 
+    private String internalHashs="";
+    private String internalHashs0=null;
+
     private String mHashtags ="";
 
     private Boolean mActivatePIN;
@@ -138,7 +142,6 @@ public class NoteActivity extends AppCompatActivity {
 
 
 
-
         mEtTitle = (EditText) findViewById(R.id.note_et_title);
         mEtContent = (EditText) findViewById(R.id.note_et_content);
 
@@ -146,36 +149,120 @@ public class NoteActivity extends AppCompatActivity {
         mNightBoolean =false;
 
 
-
-
-
-
         final View bottomSheet2 = findViewById(R.id.bottom_sheet2);
         mBottomSheetBehavior2 = BottomSheetBehavior.from(bottomSheet2);
-        mBottomSheetBehavior2.setHideable(true);
-        mBottomSheetBehavior2.setPeekHeight(300);
+        mBottomSheetBehavior2.setPeekHeight(100);
         mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
 
 
 
 
+        mMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                if(mMenu.isOpened()){
+
+                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                }else{                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+                Toast.makeText(NoteActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+                mEtContent.addTextChangedListener(new TextWatcher() {
+                    CountDownTimer timer = null;
+                    int oldCursorPosition = mEtContent.getSelectionStart();
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if(mEtContent.getText().toString().equals("show.mHashtags")){
+
+                            mEtContent.setText(mHashtags+"");
+                        }
+
+
+                        if (timer != null) {
+                            timer.cancel();
+                        }
+
+
+                        timer = new CountDownTimer(1500, 1000) {
+
+                            public void onTick(long millisUntilFinished) {
+
+                            }
+
+                            public void onFinish() {
+                                final int selectionStart = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
+
+                                //do what you wish
+                                new Thread(new Runnable() {
+                                    public void run() {
+
+                                        final SpannableString hashText = new SpannableString(mEtContent.getText().toString());
+                                        final Matcher matcher = Pattern.compile("#\\S+").matcher(hashText);
+                                        // a potentially  time consuming task
+                                        mEtContent.post(new Runnable() {
+                                            public void run() {
+
+                                                while (matcher.find()) {
+
+                                                    if (selectionStart == 0) {
+                                                        final int oldCursorPosition = mEtContent.getSelectionStart();
+
+
+                                                        hashText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.colorAccent))
+                                                                , matcher.start(), matcher.end(), 0);
+
+                                                        mEtContent.setText(hashText);
+                                                        mEtContent.setSelection(oldCursorPosition, oldCursorPosition);
+                                                        setHashtags(false);
+                                                        clickableHashtags();
+
+
+                                                    }
+                                                }
+
+
+                                            }
+                                        });
+                                    }
+                                }).start();
+
+
+                            }
+
+                        }.start();
+
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
+//set
         mEtContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                SpannableString hashText = new SpannableString(mEtContent.getText().toString());
-                Matcher matcher = Pattern.compile("#\\S+").matcher(hashText);
-                while (matcher.find()) {
-                    hashText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.colorAccent))
-                            , matcher.start(), matcher.end(), 0);
+                setHashtags(false);
+                clickableHashtags();
 
-                    mEtContent.setText(hashText);
-                }
+
             }
         });
         mEtContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
+                mMenu.close(true);
 
             }
         });
@@ -184,24 +271,6 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
 
-                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-
-
-
-
-                if(mBottomSheetBehavior2.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-                }
-                else if(mBottomSheetBehavior2.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-                }
-
-
-                //mEtTitle.setText(hashtags);
 
                 return true;
             }
@@ -241,27 +310,35 @@ public class NoteActivity extends AppCompatActivity {
 
 
 
-        clickableHashtags();
         }
 
-    private void setHashtags() {
+    private void setHashtags(Boolean force) {
 
         String txt = mEtContent.getText().toString();
         Pattern pattern = Pattern.compile("#\\S+");
         Matcher matcher = pattern.matcher(txt);
+
+        String internalHashs=" ";
+
+
         while (matcher.find())
         {
+             internalHashs=internalHashs+matcher.group()+" ";
 
-            mHashtags =mHashtags+matcher.group()+" ";
 
         }
-        //Toast.makeText(NoteActivity.this, mHashtags, Toast.LENGTH_SHORT).show();
+        if(!matcher.find()){
+
+            mHashtags =internalHashs;
+
+        }
+
+
 
     }
 
     private void clickableHashtags() {
-        setHashtags();
-        String definition = mHashtags.trim();
+        String definition = mHashtags.trim()+" ";
         TextView definitionView = (TextView) findViewById(R.id.bottom_sheet_hashtags);
         definitionView.setMovementMethod(LinkMovementMethod.getInstance());
         definitionView.setText(definition, TextView.BufferType.SPANNABLE);
@@ -278,6 +355,8 @@ public class NoteActivity extends AppCompatActivity {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
+
+
     }
 
     private ClickableSpan getClickableSpan(final String word) {
@@ -297,6 +376,7 @@ public class NoteActivity extends AppCompatActivity {
                 int end=start+mWord.length();
                 mEtContent.setSelection(start,end);
             }
+
 
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
@@ -774,7 +854,7 @@ public class NoteActivity extends AppCompatActivity {
 
     private void validateAndSaveNote() {
 
-        setHashtags();
+        setHashtags(false);
         //get the content of widgets to make a note object
         String title = mEtTitle.getText().toString();
         String content = mEtContent.getText().toString();
