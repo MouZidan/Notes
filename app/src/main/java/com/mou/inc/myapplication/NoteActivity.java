@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +46,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -85,6 +89,12 @@ public class NoteActivity extends AppCompatActivity {
     private String internalHashs0=null;
 
     private String mHashtags ="";
+    private String mAt ="";
+    private String internalAt="";
+    private String internalAt0=null;
+
+    private Boolean theTrick = true;
+
 
     private Boolean mActivatePIN;
     private String mPINstring;
@@ -177,14 +187,12 @@ public class NoteActivity extends AppCompatActivity {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+
                     }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if(mEtContent.getText().toString().equals("show.mHashtags")){
 
-                            mEtContent.setText(mHashtags+"");
-                        }
 
 
                         if (timer != null) {
@@ -192,48 +200,120 @@ public class NoteActivity extends AppCompatActivity {
                         }
 
 
-                        timer = new CountDownTimer(1500, 1000) {
+                        timer = new CountDownTimer(300,1000) {
 
                             public void onTick(long millisUntilFinished) {
 
                             }
 
                             public void onFinish() {
-                                final int selectionStart = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
+                                final int selectionStartHash = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
+                                final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
 
                                 //do what you wish
-                                new Thread(new Runnable() {
+
+
+
+
+
+
+
+
+
+
+                                Thread atT =new Thread() {
                                     public void run() {
 
-                                        final SpannableString hashText = new SpannableString(mEtContent.getText().toString());
-                                        final Matcher matcher = Pattern.compile("#\\S+").matcher(hashText);
-                                        // a potentially  time consuming task
+                                        final SpannableString atText = new SpannableString(mEtContent.getText().toString());
+                                        final Matcher matcherAt = Pattern.compile("@\\S+").matcher(atText);
                                         mEtContent.post(new Runnable() {
                                             public void run() {
 
-                                                while (matcher.find()) {
 
-                                                    if (selectionStart == 0) {
+
+
+                                                while (matcherAt.find()) {
+
+                                                    if (selectionStartAt == 0) {
                                                         final int oldCursorPosition = mEtContent.getSelectionStart();
 
 
-                                                        hashText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.colorAccent))
-                                                                , matcher.start(), matcher.end(), 0);
+                                                        atText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.atColor))
+                                                                , matcherAt.start(), matcherAt.end(), 0);
 
-                                                        mEtContent.setText(hashText);
-                                                        mEtContent.setSelection(oldCursorPosition, oldCursorPosition);
-                                                        setHashtags(false);
-                                                        clickableHashtags();
+
+                                                        mEtContent.setText(atText);
+                                                        try {
+                                                            mEtContent.setSelection(oldCursorPosition);
+                                                        } catch (IndexOutOfBoundsException e) {
+                                                        }
+
+
+                                                        //mEtTitle.setText(beforeEdits);
 
 
                                                     }
+
+                                                    clickableAt();
                                                 }
+
 
 
                                             }
                                         });
                                     }
-                                }).start();
+                                };atT.start();
+
+
+
+
+
+
+
+
+
+
+
+                                Thread hashT =new Thread() {
+                                    public void run() {
+
+                                        final SpannableString hashText = new SpannableString(mEtContent.getText().toString());
+                                        final Matcher matcherHash = Pattern.compile("#\\S+").matcher(hashText);
+
+                                        mEtContent.post(new Runnable() {
+                                            public void run() {
+
+
+
+
+
+                                                   while(matcherHash.find()  ) {
+
+                                                       if (selectionStartHash == 0) {
+                                                           final int oldCursorPosition = mEtContent.getSelectionStart();
+
+
+                                                           hashText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.hashtagColor))
+                                                                   , matcherHash.start(), matcherHash.end(), 0);
+
+                                                           mEtContent.setText(hashText);
+                                                           mEtContent.setSelection(oldCursorPosition);
+
+
+                                                           //mEtTitle.setText(beforeEdits);
+
+
+                                                   }
+                                                       clickableHashtags();
+
+                                                }
+
+
+
+                                            }
+                                        });
+                                    }
+                                };hashT.start();
 
 
                             }
@@ -253,8 +333,8 @@ public class NoteActivity extends AppCompatActivity {
         mEtContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                setHashtags(false);
                 clickableHashtags();
+                clickableAt();
 
 
             }
@@ -263,18 +343,11 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mMenu.close(true);
+//                Toast.makeText(NoteActivity.this, Utilities.getFileNandD(NoteActivity.this,String.valueOf(mLoadedNote.getDateTime())+".bin"), Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        mEtContent.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-
-                return true;
-            }
-        });
 
 
 
@@ -309,37 +382,53 @@ public class NoteActivity extends AppCompatActivity {
 
 
 
-
+bottomSheetClick();
         }
 
-    private void setHashtags(Boolean force) {
 
+    private void clickableHashtags() {
         String txt = mEtContent.getText().toString();
         Pattern pattern = Pattern.compile("#\\S+");
         Matcher matcher = pattern.matcher(txt);
 
-        String internalHashs=" ";
+        String internalHashs="";
 
+        int myMatches = 0;
+
+        TextView definitionView = (TextView) findViewById(R.id.bottom_sheet_hashtags);
+        TextView extraView = (TextView) findViewById(R.id.bottom_sheet_hashtags_extra);
 
         while (matcher.find())
         {
-             internalHashs=internalHashs+matcher.group()+" ";
+            internalHashs=internalHashs+matcher.group()+" ";
 
-
-        }
-        if(!matcher.find()){
-
-            mHashtags =internalHashs;
+            myMatches++;
 
         }
 
+        if(myMatches==0){mEtTitle.setText("0");}else mEtTitle.setText(myMatches+"");
+
+        if(myMatches==0) {
+            mHashtags = "";
+            internalHashs0="";
+            definitionView.setVisibility(View.GONE);
+            extraView.setVisibility(View.GONE);
 
 
-    }
+        }else{
+            if(!matcher.find()){
+                definitionView.setVisibility(View.VISIBLE);
+                extraView.setVisibility(View.VISIBLE);
 
-    private void clickableHashtags() {
+            mHashtags =internalHashs;internalHashs0=internalHashs;
+            }
+        }
+
+
         String definition = mHashtags.trim()+" ";
-        TextView definitionView = (TextView) findViewById(R.id.bottom_sheet_hashtags);
+
+        if(!mHashtags.equals("")){definitionView.setVisibility(View.VISIBLE);}else{definitionView.setVisibility(View.GONE);}
+
         definitionView.setMovementMethod(LinkMovementMethod.getInstance());
         definitionView.setText(definition, TextView.BufferType.SPANNABLE);
         Spannable spans = (Spannable) definitionView.getText();
@@ -350,7 +439,7 @@ public class NoteActivity extends AppCompatActivity {
                 .next()) {
             String possibleWord = definition.substring(start, end);
             if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                ClickableSpan clickSpan = getClickableSpan(possibleWord);
+                ClickableSpan clickSpan = getClickableSpanHash(possibleWord);
                 spans.setSpan(clickSpan, start, end,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -359,7 +448,7 @@ public class NoteActivity extends AppCompatActivity {
 
     }
 
-    private ClickableSpan getClickableSpan(final String word) {
+    private ClickableSpan getClickableSpanHash(final String word) {
         return new ClickableSpan() {
             final String mWord;
             {
@@ -370,10 +459,9 @@ public class NoteActivity extends AppCompatActivity {
             public void onClick(View widget) {
                 Log.d("tapped on:", mWord);
 
-
                 String contetnS = mEtContent.getText().toString();
-                int start=contetnS.indexOf(mWord);
-                int end=start+mWord.length();
+                int start=contetnS.indexOf(mWord)-1;
+                int end=start+mWord.length()+1;
                 mEtContent.setSelection(start,end);
             }
 
@@ -384,6 +472,85 @@ public class NoteActivity extends AppCompatActivity {
         };
     }
 
+    private void clickableAt() {
+        String txt = mEtContent.getText().toString();
+        Pattern pattern = Pattern.compile("@\\S+");
+        Matcher matcher = pattern.matcher(txt);
+
+        String internalAt="";
+
+        int myMatches = 0;
+        TextView definitionView = (TextView) findViewById(R.id.bottom_sheet_at);
+        TextView extraView = (TextView) findViewById(R.id.bottom_sheet_at_extra);
+
+
+        while (matcher.find())
+        {
+            internalAt=internalAt+matcher.group()+" ";
+
+            myMatches++;
+
+        }
+        if(myMatches==0) {
+            mAt = "";
+
+            definitionView.setVisibility(View.GONE);
+            extraView.setVisibility(View.GONE);
+
+        }else{
+            if(!matcher.find()){
+                definitionView.setVisibility(View.VISIBLE);
+                extraView.setVisibility(View.VISIBLE);
+                mAt =internalAt;internalAt0=internalAt;
+            }
+        }
+
+
+        String definition = mAt.trim()+" ";
+
+
+        definitionView.setMovementMethod(LinkMovementMethod.getInstance());
+        definitionView.setText(definition, TextView.BufferType.SPANNABLE);
+        Spannable spans = (Spannable) definitionView.getText();
+        BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
+        iterator.setText(definition);
+        int start = iterator.first();
+        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
+                .next()) {
+            String possibleWord = definition.substring(start, end);
+            if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
+                ClickableSpan clickSpan = getClickableSpanAt(possibleWord);
+                spans.setSpan(clickSpan, start, end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+
+definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
+    }
+
+    private ClickableSpan getClickableSpanAt(final String word) {
+        return new ClickableSpan() {
+            final String mWord;
+            {
+                mWord = word;
+            }
+
+            @Override
+            public void onClick(View widget) {
+                Log.d("tapped on:", mWord);
+
+                String contetnS = mEtContent.getText().toString();
+                int start=contetnS.indexOf(mWord)-1;
+                int end=start+mWord.length()+1;
+                mEtContent.setSelection(start,end);
+            }
+
+
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+            }
+        };
+    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -463,6 +630,9 @@ public class NoteActivity extends AppCompatActivity {
                 Button setBtn =(Button) fontSize.findViewById(R.id.set_fontsize);
                 Button defaultBtn =(Button) fontSize.findViewById(R.id.rest_fontsize);
                 SeekBar seekBar =(SeekBar) fontSize.findViewById(R.id.textSize_seekbar);
+                int conSize=Math.round(mEtContent.getTextSize());
+                seekBar.setProgress(conSize);
+                Toast.makeText(this, seekBar.getProgress()+"  "+conSize, Toast.LENGTH_SHORT).show();
 
                 Button color11 =(Button) fontSize.findViewById(R.id.color11);
                 Button color21 =(Button) fontSize.findViewById(R.id.color21);
@@ -564,14 +734,13 @@ public class NoteActivity extends AppCompatActivity {
                         }
                     }
                 });
-                seekBar.setMax(55);
+                seekBar.setMax(30);
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress,
                                                   boolean fromUser) {
-
-                        int textSizeContent = progress+16;int textSizeTitle = progress+18;
+                        int textSizeContent = progress+16;
                             mEtContent.setTextSize(textSizeContent);
                     }
 
@@ -637,7 +806,89 @@ public class NoteActivity extends AppCompatActivity {
                 alert.showDialog(this, firsttime);}
     }
 
+    public void bottomSheetClick(){
+        ImageButton selectAll =(ImageButton)findViewById(R.id.select_all_bs);
+        ImageButton copy =(ImageButton)findViewById(R.id.copy_bs);
+        ImageButton paste =(ImageButton)findViewById(R.id.paste_bs);
 
+        ImageButton share =(ImageButton)findViewById(R.id.share_bs);
+
+
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mEtContent.isFocused()){mEtContent.setSelection(0,mEtContent.getText().toString().length());
+                }else if(mEtTitle.isFocused()){mEtTitle.setSelection(0,mEtTitle.getText().toString().length());}
+            }
+        });
+
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mEtContent.isFocused()) {
+                    String copiedString = mEtContent.getText().toString();
+                    int startIndex = mEtContent.getSelectionStart();
+                    int endIndex = mEtContent.getSelectionEnd();
+                    copiedString = copiedString.substring(startIndex, endIndex);
+                    if(!copiedString.isEmpty()) {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            clipboard.setText(copiedString);
+                        } else {
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Copied Text", copiedString);
+                            clipboard.setPrimaryClip(clip);
+                        }
+                        Toast.makeText(NoteActivity.this, "Copied to Clipboard!", Toast.LENGTH_SHORT).show();
+                    }else{            Toast.makeText(NoteActivity.this, "Select some text to copy!", Toast.LENGTH_SHORT).show();
+                    }
+                } else if(mEtTitle.isFocused()){
+                    String copiedString = mEtTitle.getText().toString();
+                    int startIndex = mEtTitle.getSelectionStart();
+                    int endIndex = mEtTitle.getSelectionEnd();
+                    copiedString = copiedString.substring(startIndex, endIndex);
+                    if(!copiedString.isEmpty()) {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            clipboard.setText(copiedString);
+                        } else {
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Copied Text", copiedString);
+                            clipboard.setPrimaryClip(clip);
+                        }
+                        Toast.makeText(NoteActivity.this, "Copied to Clipboard!", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+
+            }
+        });
+
+        paste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               if(mEtContent.isFocused()) {
+                   mEtContent.getText().replace(mEtContent.getSelectionStart(), mEtContent.getSelectionEnd(), readFromClipboard());
+               }else if(mEtTitle.isFocused()){mEtTitle.getText().replace(mEtTitle.getSelectionStart(), mEtTitle.getSelectionEnd(), readFromClipboard());
+               }
+
+            }
+        });
+
+    }
+    public String readFromClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard.hasPrimaryClip()) {
+            android.content.ClipDescription description = clipboard.getPrimaryClipDescription();
+            android.content.ClipData data = clipboard.getPrimaryClip();
+            if (data != null && description != null && description.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
+                return String.valueOf(data.getItemAt(0).getText());
+        }
+        return null;
+    }
     public void setReminder(View view) {
 
         Reminder reminder = new Reminder();
@@ -730,14 +981,14 @@ public class NoteActivity extends AppCompatActivity {
     public void insertTime(View view) {
         Calendar calendar;
         String currentDateTimeString;
-        SimpleDateFormat df = new SimpleDateFormat("MMM dd yyyy h:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("MMM_dd_yyyy_h.mm_a");
 
         calendar = Calendar.getInstance();
         currentDateTimeString = df.format(calendar.getTime());
 
 
 
-        mEtContent.setText(mEtContent.getText().toString()+ "\n" +currentDateTimeString, TextView.BufferType.EDITABLE);
+        mEtContent.setText(mEtContent.getText().toString()+ "\n" +"@"+currentDateTimeString, TextView.BufferType.EDITABLE);
     mInserttime.animate().translationX(mInserttime.getHeight());
 
         final Handler handler = new Handler();
@@ -854,7 +1105,6 @@ public class NoteActivity extends AppCompatActivity {
 
     private void validateAndSaveNote() {
 
-        setHashtags(false);
         //get the content of widgets to make a note object
         String title = mEtTitle.getText().toString();
         String content = mEtContent.getText().toString();

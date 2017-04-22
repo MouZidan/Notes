@@ -47,12 +47,21 @@ public class Utilities {
 
         return true;
     }
+    public static String getFileNandD(Context context, String fileName) {
+        File dirFiles = context.getFilesDir();
+        File file = new File(dirFiles, fileName);
 
-    /**
-     * Read all saved
-     * @param context Application's context
-     * @return ArrayList of Note
-     */
+        if (file.exists()) {
+            return file.getAbsolutePath().toString();
+        }else return "No File";
+    }
+
+
+        /**
+         * Read all saved
+         * @param context Application's context
+         * @return ArrayList of Note
+         */
     public static ArrayList<Note> getAllSavedNotes(Context context) {
         ArrayList<Note> notes = new ArrayList<>();
 
@@ -97,7 +106,7 @@ public class Utilities {
     public static Note getNoteByFileName(Context context, String fileName) {
 
         File file = new File(context.getFilesDir(), fileName);
-        if(file.exists() && !file.isDirectory()) { //check if file actually exist
+        if(file.exists() && !file.isDirectory()) { //check if file  exist
 
             Log.v("UTILITIES", "File exist = " + fileName);
 

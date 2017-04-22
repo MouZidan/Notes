@@ -6,6 +6,11 @@
     <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#FF006064</color>
 
+
+    <color name="atColor">#bf360c</color>
+    <color name="hashtagColor">#006064</color>
+
+
     <color name="colorPrimaryNight">#212121</color>
     <color name="background_material_light">#006064</color>
     <color name="primary_text_default_material_light">#000000</color>

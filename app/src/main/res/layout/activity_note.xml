@@ -222,38 +222,88 @@ android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp"
+            android:paddingLeft="5dp"
             >
 
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="#Hash"
+                android:text="#'s"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:id="@+id/bottom_sheet_hashtags_extra"
+
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottom_sheet_hashtags"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
+                android:padding="5dp"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="at's"
+                android:id="@+id/bottom_sheet_at_extra"
+
                 android:layout_height="wrap_content"
                 android:textSize="16sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="zz"
-                android:id="@+id/bottom_sheet_hashtags"
+                android:id="@+id/bottom_sheet_at"
                 android:textSize="16sp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/atColor"
                 android:padding="5dp"/>
         </LinearLayout>
+
+
 
            <LinearLayout
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:gravity="center"
-               android:orientation="vertical">
-               <ProgressBar
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content" />
-               <TextView
+               android:orientation="horizontal"
+               android:layout_gravity="center_horizontal">
+
+               <ImageButton
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="SOON!"
-                   android:textSize="24sp"
+                   android:id="@+id/select_all_bs"
+                   android:src="@drawable/ic_select_all"
+                   />
+               <ImageButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/copy_bs"
+                   android:src="@drawable/ic_copy"
+                   />
+               />
+               <ImageButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/paste_bs"
+                   android:src="@drawable/ic_paste"
+                   />
+
+               <ImageButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/share_bs"
+                   android:src="@drawable/ic_share"
                    />
            </LinearLayout>
 
