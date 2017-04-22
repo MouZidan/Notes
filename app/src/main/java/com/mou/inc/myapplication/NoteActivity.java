@@ -991,7 +991,6 @@ definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
     mInserttime.animate().translationX(mInserttime.getHeight());
 
         final Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
