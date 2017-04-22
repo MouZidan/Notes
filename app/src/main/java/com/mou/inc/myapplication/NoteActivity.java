@@ -987,7 +987,6 @@ definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
         currentDateTimeString = df.format(calendar.getTime());
 
 
-
         mEtContent.setText(mEtContent.getText().toString()+ "\n" +"@"+currentDateTimeString, TextView.BufferType.EDITABLE);
     mInserttime.animate().translationX(mInserttime.getHeight());
 
