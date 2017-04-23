@@ -4,15 +4,15 @@
     <color name="colorPrimaryOff">#e0e0e0</color>
 
     <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#FF006064</color>
+    <color name="colorAccent">#263238</color>
 
 
-    <color name="atColor">#bf360c</color>
+    <color name="atColor">#4db6ac</color>
     <color name="hashtagColor">#006064</color>
 
 
     <color name="colorPrimaryNight">#212121</color>
-    <color name="background_material_light">#006064</color>
+    <color name="background_material_light">#263238</color>
     <color name="primary_text_default_material_light">#000000</color>
 
     <color name="holo_orange_dark">#bf360c</color>

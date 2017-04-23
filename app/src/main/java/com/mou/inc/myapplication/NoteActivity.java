@@ -14,6 +14,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -40,9 +42,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,6 +89,8 @@ public class NoteActivity extends AppCompatActivity {
     private Boolean mNightBoolean;
     private Boolean mAlignmentBoolean;
 
+    private Boolean checLastL;
+
     private String internalHashs="";
     private String internalHashs0=null;
 
@@ -93,7 +99,6 @@ public class NoteActivity extends AppCompatActivity {
     private String internalAt="";
     private String internalAt0=null;
 
-    private Boolean theTrick = true;
 
 
     private Boolean mActivatePIN;
@@ -147,6 +152,8 @@ public class NoteActivity extends AppCompatActivity {
 
 
 
+        TextView extraView = (TextView) findViewById(R.id.bottom_sheet_at_extra);
+        extraView.setText("@; ");
 
 
 
@@ -170,13 +177,12 @@ public class NoteActivity extends AppCompatActivity {
         mMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean opened) {
-                if(mMenu.isOpened()){
+                if(mMenu.isOpened() && (!mHashtags.equals("")|!mAt.equals("")) ){
 
                     mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-                }else{                    mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
-                Toast.makeText(NoteActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+                }else mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
             }
         });
 
@@ -192,6 +198,7 @@ public class NoteActivity extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        int letter =mEtContent.getSelectionStart()-1;
 
 
 
@@ -200,7 +207,7 @@ public class NoteActivity extends AppCompatActivity {
                         }
 
 
-                        timer = new CountDownTimer(300,1000) {
+                        timer = new CountDownTimer(1200,1000) {
 
                             public void onTick(long millisUntilFinished) {
 
@@ -211,12 +218,6 @@ public class NoteActivity extends AppCompatActivity {
                                 final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
 
                                 //do what you wish
-
-
-
-
-
-
 
 
 
@@ -242,6 +243,7 @@ public class NoteActivity extends AppCompatActivity {
                                                                 , matcherAt.start(), matcherAt.end(), 0);
 
 
+
                                                         mEtContent.setText(atText);
                                                         try {
                                                             mEtContent.setSelection(oldCursorPosition);
@@ -250,7 +252,6 @@ public class NoteActivity extends AppCompatActivity {
 
 
                                                         //mEtTitle.setText(beforeEdits);
-
 
                                                     }
 
@@ -264,6 +265,7 @@ public class NoteActivity extends AppCompatActivity {
                                     }
                                 };atT.start();
 
+                                clickableHashtags();
 
 
 
@@ -274,52 +276,18 @@ public class NoteActivity extends AppCompatActivity {
 
 
 
-                                Thread hashT =new Thread() {
-                                    public void run() {
-
-                                        final SpannableString hashText = new SpannableString(mEtContent.getText().toString());
-                                        final Matcher matcherHash = Pattern.compile("#\\S+").matcher(hashText);
-
-                                        mEtContent.post(new Runnable() {
-                                            public void run() {
 
 
 
 
 
-                                                   while(matcherHash.find()  ) {
 
-                                                       if (selectionStartHash == 0) {
-                                                           final int oldCursorPosition = mEtContent.getSelectionStart();
-
-
-                                                           hashText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.hashtagColor))
-                                                                   , matcherHash.start(), matcherHash.end(), 0);
-
-                                                           mEtContent.setText(hashText);
-                                                           mEtContent.setSelection(oldCursorPosition);
-
-
-                                                           //mEtTitle.setText(beforeEdits);
-
-
-                                                   }
-                                                       clickableHashtags();
-
-                                                }
-
-
-
-                                            }
-                                        });
-                                    }
-                                };hashT.start();
-
-
-                            }
+                    }
 
                         }.start();
 
+                        clickableHashtags();
+                        clickableAt();
 
                     }
 
@@ -333,8 +301,6 @@ public class NoteActivity extends AppCompatActivity {
         mEtContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                clickableHashtags();
-                clickableAt();
 
 
             }
@@ -343,6 +309,9 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mMenu.close(true);
+
+
+
 //                Toast.makeText(NoteActivity.this, Utilities.getFileNandD(NoteActivity.this,String.valueOf(mLoadedNote.getDateTime())+".bin"), Toast.LENGTH_SHORT).show();
 
             }
@@ -397,54 +366,58 @@ bottomSheetClick();
 
         TextView definitionView = (TextView) findViewById(R.id.bottom_sheet_hashtags);
         TextView extraView = (TextView) findViewById(R.id.bottom_sheet_hashtags_extra);
+        if(myMatches<=120) {
 
-        while (matcher.find())
-        {
-            internalHashs=internalHashs+matcher.group()+" ";
+            while (matcher.find()) {
+                internalHashs = internalHashs + matcher.group() + " ";
+                internalHashs0=matcher.group();
 
-            myMatches++;
+                myMatches++;
 
-        }
+            }
 
-        if(myMatches==0){mEtTitle.setText("0");}else mEtTitle.setText(myMatches+"");
-
-        if(myMatches==0) {
-            mHashtags = "";
-            internalHashs0="";
-            definitionView.setVisibility(View.GONE);
-            extraView.setVisibility(View.GONE);
+            if (myMatches == 0) {
+                mHashtags = "";
+                internalHashs0 = "";
+                definitionView.setVisibility(View.GONE);
+                extraView.setVisibility(View.GONE);
 
 
-        }else{
-            if(!matcher.find()){
+            } else {
+                if (!matcher.find()) {
+                    definitionView.setVisibility(View.VISIBLE);
+                    extraView.setVisibility(View.VISIBLE);
+
+                    mHashtags = internalHashs;
+                    internalHashs0 = internalHashs;
+                }
+            }
+
+
+            String definition = mHashtags.trim() + " ";
+
+            if (!mHashtags.equals("")) {
                 definitionView.setVisibility(View.VISIBLE);
-                extraView.setVisibility(View.VISIBLE);
+            } else {
+                definitionView.setVisibility(View.GONE);
+            }
 
-            mHashtags =internalHashs;internalHashs0=internalHashs;
+            definitionView.setMovementMethod(LinkMovementMethod.getInstance());
+            definitionView.setText(definition, TextView.BufferType.SPANNABLE);
+            Spannable spans = (Spannable) definitionView.getText();
+            BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
+            iterator.setText(definition);
+            int start = iterator.first();
+            for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
+                    .next()) {
+                String possibleWord = definition.substring(start, end);
+                if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
+                    ClickableSpan clickSpan = getClickableSpanHash(possibleWord);
+                    spans.setSpan(clickSpan, start, end,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
-
-
-        String definition = mHashtags.trim()+" ";
-
-        if(!mHashtags.equals("")){definitionView.setVisibility(View.VISIBLE);}else{definitionView.setVisibility(View.GONE);}
-
-        definitionView.setMovementMethod(LinkMovementMethod.getInstance());
-        definitionView.setText(definition, TextView.BufferType.SPANNABLE);
-        Spannable spans = (Spannable) definitionView.getText();
-        BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
-        iterator.setText(definition);
-        int start = iterator.first();
-        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
-                .next()) {
-            String possibleWord = definition.substring(start, end);
-            if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                ClickableSpan clickSpan = getClickableSpanHash(possibleWord);
-                spans.setSpan(clickSpan, start, end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-
 
     }
 
@@ -484,48 +457,51 @@ bottomSheetClick();
         TextView extraView = (TextView) findViewById(R.id.bottom_sheet_at_extra);
 
 
-        while (matcher.find())
-        {
-            internalAt=internalAt+matcher.group()+" ";
+            while (matcher.find()) {
+                internalAt = internalAt + matcher.group() + " ";
 
-            myMatches++;
+                internalAt0=matcher.group();
 
-        }
-        if(myMatches==0) {
-            mAt = "";
+                myMatches++;
 
-            definitionView.setVisibility(View.GONE);
-            extraView.setVisibility(View.GONE);
-
-        }else{
-            if(!matcher.find()){
-                definitionView.setVisibility(View.VISIBLE);
-                extraView.setVisibility(View.VISIBLE);
-                mAt =internalAt;internalAt0=internalAt;
             }
-        }
+            if (myMatches == 0) {
+                mAt = "";
 
+                definitionView.setVisibility(View.GONE);
+                extraView.setVisibility(View.GONE);
 
-        String definition = mAt.trim()+" ";
-
-
-        definitionView.setMovementMethod(LinkMovementMethod.getInstance());
-        definitionView.setText(definition, TextView.BufferType.SPANNABLE);
-        Spannable spans = (Spannable) definitionView.getText();
-        BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
-        iterator.setText(definition);
-        int start = iterator.first();
-        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
-                .next()) {
-            String possibleWord = definition.substring(start, end);
-            if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                ClickableSpan clickSpan = getClickableSpanAt(possibleWord);
-                spans.setSpan(clickSpan, start, end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                if (!matcher.find()) {
+                    definitionView.setVisibility(View.VISIBLE);
+                    extraView.setVisibility(View.VISIBLE);
+                    mAt = internalAt;
+                    internalAt0 = internalAt;
+                }
             }
-        }
 
-definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
+
+            String definition = mAt.trim() + " ";
+
+
+            definitionView.setMovementMethod(LinkMovementMethod.getInstance());
+            definitionView.setText(definition, TextView.BufferType.SPANNABLE);
+            Spannable spans = (Spannable) definitionView.getText();
+            BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
+            iterator.setText(definition);
+            int start = iterator.first();
+            for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
+                    .next()) {
+                String possibleWord = definition.substring(start, end);
+                if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
+                    ClickableSpan clickSpan = getClickableSpanAt(possibleWord);
+                    spans.setSpan(clickSpan, start, end,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+
+            definitionView.setTextColor(ContextCompat.getColor(this, R.color.atColor));
+
     }
 
     private ClickableSpan getClickableSpanAt(final String word) {
@@ -810,8 +786,8 @@ definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
         ImageButton selectAll =(ImageButton)findViewById(R.id.select_all_bs);
         ImageButton copy =(ImageButton)findViewById(R.id.copy_bs);
         ImageButton paste =(ImageButton)findViewById(R.id.paste_bs);
-
         ImageButton share =(ImageButton)findViewById(R.id.share_bs);
+
 
 
         selectAll.setOnClickListener(new View.OnClickListener() {
@@ -878,7 +854,187 @@ definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
             }
         });
 
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int contetnSelection=mEtContent.getSelectionEnd()-mEtContent.getSelectionStart();
+                int titleSelection=mEtTitle.getSelectionEnd()-mEtTitle.getSelectionStart();
+
+
+                if(contetnSelection!=0 | titleSelection!=0){
+                    getUserActionDialog();
+
+
+
+
+                }else  if(mLoadedNote!=null) {
+                    String theWholeNote="";
+
+                    theWholeNote =
+                            mEtTitle.getText().toString()
+                                    + "\n -------------- \n"
+                                    + mEtContent.getText().toString()
+                                    +"\n \n I wrote this note at:"+mLoadedNote.getDateTimeFormatted(NoteActivity.this);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, theWholeNote);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+
+                }else if(mLoadedNote==null){
+                    String theWholeNote="";
+
+
+                    theWholeNote =
+                            mEtTitle.getText().toString()
+                                    + "\n -------------- \n"
+                                    + mEtContent.getText().toString();
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, theWholeNote);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+
+
+
+
+
+
+            }
+        });
     }
+
+    public void getUserActionDialog(){
+
+        Dialog getUserAction =new Dialog(NoteActivity.this,R.style.CustomDialogVertical );
+        getUserAction.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getUserAction.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        getUserAction.setCancelable(true);
+        getUserAction.setContentView(R.layout.share_action_dialog);
+
+        final String theWholeNote =
+                mEtTitle.getText().toString()
+                        + "\n -------------- \n"
+                        + mEtContent.getText().toString();
+
+        final Button selectedOnly=(Button)getUserAction.findViewById(R.id.share_action_dialog_selectedTextAction);
+        final Button wholeNote=(Button)getUserAction.findViewById(R.id.share_action_dialog_noteAction);
+
+        selectedOnly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonEffect(selectedOnly, NoteActivity.this);
+                if(mEtTitle.isFocused()){
+                    int startIndex = mEtTitle.getSelectionStart();
+                    int endIndex = mEtTitle.getSelectionEnd();
+                    String selectedText=mEtTitle.getText().toString().substring(startIndex,endIndex);
+
+
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, selectedText);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+
+                } else if(mEtContent.isFocused()){
+
+                    int startIndex = mEtContent.getSelectionStart();
+                    int endIndex = mEtContent.getSelectionEnd();
+                    String selectedText=mEtContent.getText().toString().substring(startIndex,endIndex);
+
+
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, selectedText);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+
+            }
+        });
+
+        wholeNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                buttonEffect(wholeNote, NoteActivity.this);
+
+                String theWholeNote="";
+                if(mLoadedNote!=null) {
+                    theWholeNote =
+                            mEtTitle.getText().toString()
+                                    + "\n -------------- \n"
+                                    + mEtContent.getText().toString()
+                                    +"\n \n I wrote this note at:"+mLoadedNote.getDateTime();
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, theWholeNote);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+
+                }else if(mLoadedNote==null){
+
+                    theWholeNote =
+                            mEtTitle.getText().toString()
+                                    + "\n -------------- \n"
+                                    + mEtContent.getText().toString();
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, theWholeNote);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+            }
+        });
+
+
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = getUserAction.getWindow();
+        lp.copyFrom(window.getAttributes());
+        //This makes the dialog take up the full width
+        lp.width = WindowManager.LayoutParams.FILL_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+
+        getUserAction.show();
+    }
+
+
+
+    public void buttonEffect(View button , final Context context){
+
+        button.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        v.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimaryOff));
+                        v.animate().alpha(.7F).setDuration(500);
+                        //v.invalidate();
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        //v.getBackground().clearColorFilter();
+                        v.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+                        v.animate().alpha(1F).setDuration(500);
+
+                        //v.invalidate();
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+
     public String readFromClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard.hasPrimaryClip()) {
@@ -1113,7 +1269,6 @@ definitionView.setTextColor(ContextCompat.getColor(this,R.color.atColor));
         String pinString = mPINstring;
 
         String hashtags =mHashtags;
-        Toast.makeText(this, hashtags, Toast.LENGTH_SHORT).show();
 
 
 
