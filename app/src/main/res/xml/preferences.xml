@@ -17,6 +17,14 @@
         android:defaultValue=""
 
         />
+    <EditTextPreference
+        android:key="cDAT"
+        android:title="Insert time command"
+        android:summary="Set insert date command, empty equals ' .cDAT' ."
+        android:maxLength="15"
+        android:defaultValue=""
+
+        />
 
 </PreferenceScreen>
 

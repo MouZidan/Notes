@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="whole note"
+            android:layout_weight="10"
             android:textAllCaps="true"
             android:textColor="@color/hashtagColor"
             android:id="@+id/share_action_dialog_noteAction"
@@ -70,6 +71,8 @@
         />
 
         <Button
+            android:layout_weight="10"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/hashtagColor"

@@ -20,6 +20,26 @@ public class FirstUseActivity extends AppCompatActivity {
                 startActivity(new Intent(FirstUseActivity.this, MainActivity.class));
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+        String title="\uD83D\uDE04Hi!";
+        String content="You can insert date and time to your note like this ' .cDAT' through the float button" +
+                " or you can do this with the realtime command detection when you simply type " +
+                "[.cDAT] (without brackets) after a space.  .";
+
+
+        Utilities.saveNote(this, new Note(System.currentTimeMillis(), title, content, false,true , false ,"","your note app"));
+
     }
 
 

@@ -2,11 +2,14 @@ package com.mou.inc.myapplication;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 /**
  * Created by Mohannad on 14/03/2017.
  */
 public class SettingsActivity extends Activity {
+
+    public static String commandfromPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +22,10 @@ public class SettingsActivity extends Activity {
                 .commit();
 
         overridePendingTransition(0, 0);
+
+        String command = PreferenceManager.getDefaultSharedPreferences(this).getString("cDAT", "");
+
+        if(command!=null ){commandfromPref=command;}else{commandfromPref=".cDAT";}
 
     }
 

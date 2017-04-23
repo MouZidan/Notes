@@ -113,6 +113,7 @@ android:id="@+id/linearLayout"
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+
         >
 
         <com.github.clans.fab.FloatingActionMenu
@@ -208,14 +209,18 @@ android:id="@+id/linearLayout"
         android:id="@+id/bottom_sheet2"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:clipToPadding="true"
+        android:clipToPadding="false"
         android:background="@color/colorPrimaryOff"
+        android:layout_gravity="center_horizontal"
+
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/bs_LL"
+            >
             <!--hash place-->
 
             <LinearLayout

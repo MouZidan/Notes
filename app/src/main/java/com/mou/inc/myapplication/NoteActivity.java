@@ -13,6 +13,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
@@ -38,7 +40,9 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,6 +54,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -121,7 +126,7 @@ public class NoteActivity extends AppCompatActivity {
 
     public static String userContentString;
 
-
+private int counter0=-1;
 
 
     private PendingIntent pendingIntent;
@@ -142,7 +147,7 @@ public class NoteActivity extends AppCompatActivity {
 
         //overridePendingTransition(0, 0);//canceling layout transition
         getWindow().getAttributes().windowAnimations = R.style.Fade;
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 
 
@@ -166,10 +171,13 @@ public class NoteActivity extends AppCompatActivity {
         mNightBoolean =false;
 
 
+
+
         final View bottomSheet2 = findViewById(R.id.bottom_sheet2);
         mBottomSheetBehavior2 = BottomSheetBehavior.from(bottomSheet2);
         mBottomSheetBehavior2.setPeekHeight(100);
         mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
+
 
 
 
@@ -188,7 +196,6 @@ public class NoteActivity extends AppCompatActivity {
 
                 mEtContent.addTextChangedListener(new TextWatcher() {
                     CountDownTimer timer = null;
-                    int oldCursorPosition = mEtContent.getSelectionStart();
 
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -198,96 +205,43 @@ public class NoteActivity extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        int letter =mEtContent.getSelectionStart()-1;
 
-
+                        final TextWatcher textWatcher=this;
 
                         if (timer != null) {
                             timer.cancel();
                         }
 
 
-                        timer = new CountDownTimer(1200,1000) {
+                        timer = new CountDownTimer(100, 1000) {
 
                             public void onTick(long millisUntilFinished) {
 
                             }
 
                             public void onFinish() {
+
                                 final int selectionStartHash = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
                                 final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
 
                                 //do what you wish
 
-
-
-
-                                Thread atT =new Thread() {
-                                    public void run() {
-
-                                        final SpannableString atText = new SpannableString(mEtContent.getText().toString());
-                                        final Matcher matcherAt = Pattern.compile("@\\S+").matcher(atText);
-                                        mEtContent.post(new Runnable() {
-                                            public void run() {
+                                //coloredSpanThread(selectionStartAt ,textWatcher);
 
 
 
 
-                                                while (matcherAt.find()) {
-
-                                                    if (selectionStartAt == 0) {
-                                                        final int oldCursorPosition = mEtContent.getSelectionStart();
-
-
-                                                        atText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.atColor))
-                                                                , matcherAt.start(), matcherAt.end(), 0);
-
-
-
-                                                        mEtContent.setText(atText);
-                                                        try {
-                                                            mEtContent.setSelection(oldCursorPosition);
-                                                        } catch (IndexOutOfBoundsException e) {
-                                                        }
-
-
-                                                        //mEtTitle.setText(beforeEdits);
-
-                                                    }
-
-                                                    clickableAt();
-                                                }
-
-
-
-                                            }
-                                        });
-                                    }
-                                };atT.start();
-
-                                clickableHashtags();
+                                coloredSpanThread(selectionStartAt,textWatcher);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-                    }
+                            }
 
                         }.start();
 
-                        clickableHashtags();
-                        clickableAt();
+
+
 
                     }
 
@@ -418,6 +372,78 @@ bottomSheetClick();
                 }
             }
         }
+
+    }
+    private void coloredSpanThread(final int selectionStartAt , final TextWatcher textWatcher){
+
+
+        mEtContent.removeTextChangedListener(textWatcher);
+
+                final SpannableString atText = new SpannableString(mEtContent.getText().toString());
+                final Matcher matcherAt = Pattern.compile("@\\S+").matcher(atText);
+        String command;
+//        String commandfromPref = PreferenceManager.getDefaultSharedPreferences(NoteActivity.this).getString("cDAT", "");
+
+        if(!SettingsActivity.commandfromPref.equals("")){command=" "+SettingsActivity.commandfromPref;
+        }else {command=" .cDAT";}
+
+
+        if (selectionStartAt == 0 && mEtContent.getText().toString().contains(command)) {
+            final int oldCursorPosition = mEtContent.getSelectionStart();
+
+            mEtContent.setText(mEtContent.getText().toString().replace(command, "@" + currentDateTimeString()));
+            try {
+                coloredSpanThread(selectionStartAt,textWatcher);
+                mEtContent.setSelection(oldCursorPosition);
+            } catch (IndexOutOfBoundsException e) {}
+
+        }
+
+        String s = mEtContent.getText().toString();
+        int counter = 0;
+        for( int i=0; i<s.length(); i++ ) {
+            if( s.charAt(i) == '@' ) {
+                counter++;
+            }
+        }
+
+                        while (matcherAt.find() && counter!=counter0 && counter<400 )  {
+
+                            if (selectionStartAt == 0) {
+
+                                final int oldCursorPosition = mEtContent.getSelectionStart();
+
+                                atText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.atColor))
+                                        , matcherAt.start(), matcherAt.end(), 0);
+
+                                mEtContent.setText(atText);
+                                try {
+                                    mEtContent.setSelection(oldCursorPosition);
+                                } catch (IndexOutOfBoundsException e) {
+                                }
+
+
+                                //mEtTitle.setText(beforeEdits);
+
+                            }
+
+                            clickableHashtags();
+                            clickableAt();
+
+                        }
+                        if (counter>= 400)
+                        {
+                            Toast.makeText(this, "you reached the maximum amount of '@' at this note (400 @)\n Warning:if you add more the app probably will crash", Toast.LENGTH_LONG).show();
+                        }else if(counter==0){counter0=-1;}else {counter0=counter;}
+
+        mEtContent.addTextChangedListener(textWatcher);
+
+
+
+
+
+
+
 
     }
 
@@ -755,7 +781,6 @@ bottomSheetClick();
     public void onBackPressed() {
 
         actionCancel();
-        overridePendingTransition(0, 0);
 
 
 
@@ -806,7 +831,12 @@ bottomSheetClick();
                     String copiedString = mEtContent.getText().toString();
                     int startIndex = mEtContent.getSelectionStart();
                     int endIndex = mEtContent.getSelectionEnd();
-                    copiedString = copiedString.substring(startIndex, endIndex);
+                    try {
+                        copiedString = copiedString.substring(endIndex, startIndex);
+                    } catch (StringIndexOutOfBoundsException e) {
+                        copiedString = copiedString.substring(startIndex, endIndex);
+
+                    }
                     if(!copiedString.isEmpty()) {
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
                             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -845,11 +875,35 @@ bottomSheetClick();
         paste.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int startIndexT = mEtTitle.getSelectionStart();
+                int endIndexT = mEtTitle.getSelectionEnd();
 
-               if(mEtContent.isFocused()) {
-                   mEtContent.getText().replace(mEtContent.getSelectionStart(), mEtContent.getSelectionEnd(), readFromClipboard());
-               }else if(mEtTitle.isFocused()){mEtTitle.getText().replace(mEtTitle.getSelectionStart(), mEtTitle.getSelectionEnd(), readFromClipboard());
-               }
+                int startIndexC = mEtContent.getSelectionStart();
+                int endIndexC = mEtContent.getSelectionEnd();
+
+
+                if(mEtContent.isFocused()) {
+
+                               try {
+
+                                   mEtContent.getText().replace(startIndexC, endIndexC, readFromClipboard());
+
+                               } catch (IndexOutOfBoundsException e) {
+                                   mEtContent.getText().replace(endIndexC, startIndexC, readFromClipboard());
+
+                               }
+                           }else if(mEtTitle.isFocused()){
+
+                               try {
+
+                                   mEtTitle.getText().replace(startIndexT, endIndexT, readFromClipboard());
+
+                               } catch (IndexOutOfBoundsException e) {
+                                   mEtTitle.getText().replace(endIndexT, startIndexT, readFromClipboard());
+
+                               }
+
+                           }
 
             }
         });
@@ -1164,7 +1218,15 @@ bottomSheetClick();
             }
         }, 60000);
     }
+public String currentDateTimeString(){
+    Calendar calendar;
+    String currentDateTimeString;
+    SimpleDateFormat df = new SimpleDateFormat("MMM_dd_yyyy_h.mm_a");
 
+    calendar = Calendar.getInstance();
+    currentDateTimeString = df.format(calendar.getTime());
+return currentDateTimeString;
+}
 
 
 
@@ -1408,6 +1470,7 @@ bottomSheetClick();
 
             final EditText etRContent = (EditText) Rdialog.findViewById(R.id.notify_title_content);
 
+
             final Boolean[] allIsOk = new Boolean[1];
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 timePickerHour = timePicker.getHour();
@@ -1459,17 +1522,18 @@ bottomSheetClick();
                     notifyTimePicker = timePickerHour + ":" + timePickerMinute;
 */
 
+                    userContentString=etRContent.getText().toString();
 
-                    if( userContentString.isEmpty() ){
-                        Toast.makeText(NoteActivity.this, "All fields must be filled.", Toast.LENGTH_SHORT).show();
-
-                    }else {
-
-                       // notifyUserContent = userContentString;
+                    if( userContentString.equals("")){
                         reminderBoolean =true;
                         startService(new Intent(NoteActivity.this, AlarmIntentService.class));
 
                         Rdialog.dismiss();
+                    }else {
+
+                       // notifyUserContent = userContentString;
+                        Toast.makeText(NoteActivity.this, "All fields must be filled.", Toast.LENGTH_SHORT).show();
+
                     }
                     //et fields
 
@@ -1519,7 +1583,6 @@ bottomSheetClick();
              if(mActivatePIN == false){
 
                  clearPin.setVisibility(View.GONE);
-                 Toast.makeText(NoteActivity.this, " false ", Toast.LENGTH_SHORT).show();
              }else{clearPin.setVisibility(View.VISIBLE);}
 
 
