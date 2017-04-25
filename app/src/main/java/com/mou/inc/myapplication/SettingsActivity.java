@@ -23,9 +23,6 @@ public class SettingsActivity extends Activity {
 
         overridePendingTransition(0, 0);
 
-        String command = PreferenceManager.getDefaultSharedPreferences(this).getString("cDAT", "");
-
-        if(command!=null ){commandfromPref=command;}else{commandfromPref=".cDAT";}
 
     }
 

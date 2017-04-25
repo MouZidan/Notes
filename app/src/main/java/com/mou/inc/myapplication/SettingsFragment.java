@@ -1,5 +1,6 @@
 package com.mou.inc.myapplication;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -11,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Mohannad on 15/03/2017.
+ * Created by Mohannad on 15/03/2016.
  */
 
 public class SettingsFragment extends PreferenceFragment {
-    EditTextPreference ETcg = (EditTextPreference) findPreference("changepassword");
+    EditTextPreference dateCommand = (EditTextPreference) findPreference("cDAT");
     CheckBoxPreference mCBRenameApp =(CheckBoxPreference)findPreference("userNameCB");
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
@@ -31,6 +32,7 @@ public class SettingsFragment extends PreferenceFragment {
 
 
 
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,5 +42,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         return view;
     }
+
+
 
 }

@@ -2,18 +2,21 @@ package com.mou.inc.myapplication;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.List;
 
-/**
- * Created by saeid on 5/8/2016.
- */
+
 public class Utilities {
 
     /**
@@ -47,6 +50,8 @@ public class Utilities {
 
         return true;
     }
+
+    //testing some thing
     public static String getFileNandD(Context context, String fileName) {
         File dirFiles = context.getFilesDir();
         File file = new File(dirFiles, fileName);
@@ -67,6 +72,8 @@ public class Utilities {
 
         File filesDir = context.getFilesDir();
         ArrayList<String> noteFiles = new ArrayList<>();
+        List<String> customThing=new ArrayList<String>();
+        String file0 = "";
 
         //add .bin files to the noteFiles list
         for(String file : filesDir.list()) {
@@ -110,6 +117,7 @@ public class Utilities {
 
             Log.v("UTILITIES", "File exist = " + fileName);
 
+
             FileInputStream fis;
             ObjectInputStream ois;
 
@@ -132,6 +140,42 @@ public class Utilities {
         }
     }
 
+
+
+
+
+
+
+
+   /* private void copyDataBase() throws IOException {
+
+        // Open your local db as the input stream
+        InputStream myInput = new FileInputStream(filePath + fileNameWithExtension);
+
+        // Path to the just created empty db
+        String outFileName = OUTPUT_PATH + "/" + FILE_NAME;
+
+        // Open the empty db as the output stream
+        new File(outFileName).createNewFile();
+        OutputStream myOutput = new FileOutputStream(outFileName);
+
+        // transfer bytes from the inputfile to the outputfile
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = myInput.read(buffer)) > 0) {
+            myOutput.write(buffer, 0, length);
+        }
+
+        // Close the streams
+        myOutput.flush();
+        myOutput.close();
+        myInput.close();
+    }*/
+
+
+
+
+
     public static boolean deleteFile(Context context, String fileName) {
         File dirFiles = context.getFilesDir();
         File file = new File(dirFiles, fileName);
@@ -142,4 +186,7 @@ public class Utilities {
 
         return false;
     }
+
+
+
 }

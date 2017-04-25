@@ -300,6 +300,7 @@ private int counter0=-1;
             mActivatePIN = (false);
 
 
+
         }
 
 
@@ -309,7 +310,7 @@ bottomSheetClick();
         }
 
 
-    private void clickableHashtags() {
+    private void clickableHashtags(final TextWatcher textWatcher) {
         String txt = mEtContent.getText().toString();
         Pattern pattern = Pattern.compile("#\\S+");
         Matcher matcher = pattern.matcher(txt);
@@ -366,7 +367,7 @@ bottomSheetClick();
                     .next()) {
                 String possibleWord = definition.substring(start, end);
                 if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                    ClickableSpan clickSpan = getClickableSpanHash(possibleWord);
+                    ClickableSpan clickSpan = getClickableSpanHash(possibleWord ,textWatcher);
                     spans.setSpan(clickSpan, start, end,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
@@ -381,17 +382,13 @@ bottomSheetClick();
 
                 final SpannableString atText = new SpannableString(mEtContent.getText().toString());
                 final Matcher matcherAt = Pattern.compile("@\\S+").matcher(atText);
-        String command;
-//        String commandfromPref = PreferenceManager.getDefaultSharedPreferences(NoteActivity.this).getString("cDAT", "");
-
-        if(!SettingsActivity.commandfromPref.equals("")){command=" "+SettingsActivity.commandfromPref;
-        }else {command=" .cDAT";}
+        String insertTimeCommand=" .cDAT";
 
 
-        if (selectionStartAt == 0 && mEtContent.getText().toString().contains(command)) {
+        if (selectionStartAt == 0 && mEtContent.getText().toString().contains(insertTimeCommand)) {
             final int oldCursorPosition = mEtContent.getSelectionStart();
 
-            mEtContent.setText(mEtContent.getText().toString().replace(command, "@" + currentDateTimeString()));
+            mEtContent.setText(mEtContent.getText().toString().replace(insertTimeCommand, "@" + currentDateTimeString()));
             try {
                 coloredSpanThread(selectionStartAt,textWatcher);
                 mEtContent.setSelection(oldCursorPosition);
@@ -427,13 +424,13 @@ bottomSheetClick();
 
                             }
 
-                            clickableHashtags();
+                            clickableHashtags(textWatcher);
                             clickableAt();
 
                         }
                         if (counter>= 400)
                         {
-                            Toast.makeText(this, "you reached the maximum amount of '@' at this note (400 @)\n Warning:if you add more the app probably will crash", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "you reached the maximum amount of '@' at this note (400 @)\n Warning:if you add more the app probably will crash", Toast.LENGTH_LONG).cancel();
                         }else if(counter==0){counter0=-1;}else {counter0=counter;}
 
         mEtContent.addTextChangedListener(textWatcher);
@@ -447,7 +444,7 @@ bottomSheetClick();
 
     }
 
-    private ClickableSpan getClickableSpanHash(final String word) {
+    private ClickableSpan getClickableSpanHash(final String word, final TextWatcher textWatcher) {
         return new ClickableSpan() {
             final String mWord;
             {
@@ -456,12 +453,27 @@ bottomSheetClick();
 
             @Override
             public void onClick(View widget) {
+
+                mEtContent.removeTextChangedListener(textWatcher);
+
                 Log.d("tapped on:", mWord);
 
                 String contetnS = mEtContent.getText().toString();
                 int start=contetnS.indexOf(mWord)-1;
                 int end=start+mWord.length()+1;
+
+
                 mEtContent.setSelection(start,end);
+
+
+
+                //date
+
+                        //Apr_24_2017_11.43_PM
+
+
+                mEtContent.addTextChangedListener(textWatcher);
+
             }
 
 
@@ -542,12 +554,27 @@ bottomSheetClick();
                 Log.d("tapped on:", mWord);
 
                 String contetnS = mEtContent.getText().toString();
-                int start=contetnS.indexOf(mWord)-1;
-                int end=start+mWord.length()+1;
-                mEtContent.setSelection(start,end);
+                int start = contetnS.indexOf(mWord) - 1;
+                int end = start + mWord.length() + 1;
+                mEtContent.setSelection(start, end);
+
+                if (mWord.length() >= 3 && mWord.length() ==20) {
+                    if (
+                        mWord.charAt(3) == '_' &&mWord.charAt(6) == '_'&&mWord.charAt(11) == '_'  &&mWord.charAt(17) == '_'
+                        &&Character.isLetter(mWord.charAt(0))&&Character.isLetter(mWord.charAt(1))&&Character.isLetter(mWord.charAt(2))
+                        &&Character.isLetter(mWord.charAt(mWord.length() -1))  &&Character.isLetter(mWord.charAt(mWord.length()-2))
+                        &&Character.isDigit(mWord.charAt(10))&&Character.isDigit(mWord.charAt(9))
+                        &&Character.isDigit(mWord.charAt(5))&&Character.isDigit(mWord.charAt(4))
+                        &&Character.isDigit(mWord.charAt(8))&&Character.isDigit(mWord.charAt(7))
+                        ) {
+                        //this is date .. do something here
+
+                    } else mEtTitle.setText("not DATE");
+
+
+                }else mEtTitle.setText("not DATE");
+
             }
-
-
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
             }
@@ -580,7 +607,7 @@ bottomSheetClick();
 
 
 
-       getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + mEtTitle.getText() +" Note" + "</font>"));
+       getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + "\" "+mEtTitle.getText() +" \" Note" + "</font>"));
 
 
         super.onResume();
@@ -632,9 +659,6 @@ bottomSheetClick();
                 Button setBtn =(Button) fontSize.findViewById(R.id.set_fontsize);
                 Button defaultBtn =(Button) fontSize.findViewById(R.id.rest_fontsize);
                 SeekBar seekBar =(SeekBar) fontSize.findViewById(R.id.textSize_seekbar);
-                int conSize=Math.round(mEtContent.getTextSize());
-                seekBar.setProgress(conSize);
-                Toast.makeText(this, seekBar.getProgress()+"  "+conSize, Toast.LENGTH_SHORT).show();
 
                 Button color11 =(Button) fontSize.findViewById(R.id.color11);
                 Button color21 =(Button) fontSize.findViewById(R.id.color21);
@@ -1062,21 +1086,24 @@ bottomSheetClick();
 
 
 
-    public void buttonEffect(View button , final Context context){
+    public static void buttonEffect(View button , final Context context){
+
+        final int oldBG =button.getDrawingCacheBackgroundColor();
 
         button.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
-                        v.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimaryOff));
+                        //v.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimaryOff));
+                        v.getBackground().setColorFilter(R.id.color21, PorterDuff.Mode.SCREEN);
                         v.animate().alpha(.7F).setDuration(500);
                         //v.invalidate();
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
-                        //v.getBackground().clearColorFilter();
-                        v.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+                        v.getBackground().clearColorFilter();
+                        v.setBackgroundColor(oldBG);
                         v.animate().alpha(1F).setDuration(500);
 
                         //v.invalidate();
