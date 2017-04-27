@@ -111,8 +111,9 @@ android:id="@+id/linearLayout"
 
 </LinearLayout>
     <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fab_frame"
 
         >
 
@@ -120,13 +121,14 @@ android:id="@+id/linearLayout"
             android:id="@+id/fab_menu"
             app:menu_icon="@drawable/ic_add"
             android:layout_gravity="top|right"
+            android:layout_marginTop="70dp"
+
             app:menu_fab_size="mini"
             app:menu_colorNormal="@android:color/transparent"
             app:menu_colorPressed="@android:color/transparent"
 
             app:menu_showShadow="false"
             app:menu_openDirection="down"
-            android:layout_marginTop="70dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:menu_fab_hide_animation="@anim/fab_slide_out_to_right"

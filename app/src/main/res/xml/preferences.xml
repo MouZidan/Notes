@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    
 
     >
 
@@ -17,14 +18,26 @@
         android:defaultValue=""
 
         />
-    <EditTextPreference
-        android:key="cDAT"
-        android:title="Insert time command"
-        android:summary="Set insert date command, empty equals ' .cDAT' ."
-        android:maxLength="15"
-        android:defaultValue=""
 
         />
+
+    <PreferenceScreen
+        android:title="Runtime commands"
+
+        android:summary="Customize your Runtime commands."
+
+
+        >
+
+        <EditTextPreference
+            android:key="insert_time_command"
+            android:title="Insert Date/time Command, all commands starts with [space+.]."
+            android:maxLength="15"
+            android:defaultValue="cDAT"
+        />
+
+
+    </PreferenceScreen>
 
 </PreferenceScreen>
 

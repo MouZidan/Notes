@@ -1,13 +1,17 @@
 package com.mou.inc.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -18,16 +22,13 @@ public class FirstUseActivity extends AppCompatActivity {
     int screenHight;
     int screenWidth;
 
+    public String content;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_use);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        screenHight = displayMetrics.heightPixels;
-        screenWidth = displayMetrics.widthPixels;
 
 
 
@@ -40,14 +41,10 @@ public class FirstUseActivity extends AppCompatActivity {
         });
 
 
-
-
-
         vf = (ViewFlipper) findViewById(R.id.view_flipper);
 
 
-        final float[] dX = new float[1];
-        final float[] dY = new float[1];
+
         /*button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -87,24 +84,54 @@ public class FirstUseActivity extends AppCompatActivity {
         });*/
 
 
+        String title = "\uD83D\uDE04Hi!";
+        content = "You can insert date and time in your note like this \"@Apr_24_2017_11.55_PM\" " +
+                "through the float button or you can do this using " +
+                "the runtime command detection and simply type {.cDAT} (without brackets) after a space," +
+                " also all commands can be customized in Settings.";
 
-        String title="\uD83D\uDE04Hi!";
-        String content="You can insert date and time to your note like this \"@Apr_24_2017_11.55_PM\" " +
-                "through the float button or you can do this with " +
-                "the runtime command detection when you simply type [.cDAT] (without brackets) after a space," +
-                " also all commands can be customized from Settings.";
 
-
-        Utilities.saveNote(this, new Note(System.currentTimeMillis(), title, content, false, false, false, "", "your note app"));
+        Utilities.saveNote(this, new Note(System.currentTimeMillis(), title+"", content+"", false, false, false, "", "your note app",false));
 
     }
 
+    @Override
+    protected void onResume() {
+        try {
+            currentViewDots();
+        } catch (NullPointerException e) {
+            currentViewDots();
 
-public void currentViewDots(){
+            e.printStackTrace();
+        }
+        super.onResume();
+    }
+
+    public void currentViewDots() {
+
+        ImageView dot1 = (ImageView) findViewById(R.id.dot_1);
+        ImageView dot2 = (ImageView) findViewById(R.id.dot_2);
 
 
+        if (vf.getDisplayedChild() == 0) {
+            dot1.animate().scaleX(2);
+            dot2.animate().scaleX(1);
+            dot1.animate().scaleY(2);
+            dot2.animate().scaleY(1);
+        }
+        if (vf.getDisplayedChild() == 1) {
+            dot2.animate().scaleX(2);
+            dot1.animate().scaleX(1);
+            dot2.animate().scaleY(2);
+            dot1.animate().scaleY(1);
+            Button button1 = (Button) findViewById(R.id.startBtn);
+            button1.setAlpha(0);
+            button1.animate().alpha(1).setDuration(500);
+            NoteActivity.buttonEffect(button1, FirstUseActivity.this);
 
-}
+        }
+
+    }
 
 
     public boolean onTouchEvent(MotionEvent touchevent) {
@@ -117,15 +144,16 @@ public void currentViewDots(){
             case MotionEvent.ACTION_MOVE:
                 final View currentView = vf.getCurrentView();
 
-                if (vf.getDisplayedChild()==0 &&lastX-touchevent.getX()>0){
-                    currentView.layout((int)(touchevent.getX() - lastX)*2,
-                        currentView.getTop(), currentView.getRight(),
-                        currentView.getBottom());}
+                if (vf.getDisplayedChild() == 0 && lastX - touchevent.getX() > 0) {
+                    currentView.layout((int) (touchevent.getX() - lastX) * 2,
+                            currentView.getTop(), currentView.getRight(),
+                            currentView.getBottom());
+                }
 
 
                 break;
 
-           case MotionEvent.ACTION_UP: {
+            case MotionEvent.ACTION_UP: {
                 float currentX = touchevent.getX();
                 if (lastX < currentX) {
                     if (vf.getDisplayedChild() == 0)
@@ -141,28 +169,13 @@ public void currentViewDots(){
                     vf.setOutAnimation(this, R.anim.out_to_left);
                     vf.showPrevious();
                 }
-               ImageView dot1=(ImageView)findViewById(R.id.dot_1);
-               ImageView dot2=(ImageView)findViewById(R.id.dot_2);
+                currentViewDots();
 
-               if(vf.getDisplayedChild()==0){
-                   dot1.animate().scaleX(2); dot2.animate().scaleX(1);
-                   dot1.animate().scaleY(2); dot2.animate().scaleY(1);
-               }
-               if(vf.getDisplayedChild()==1){
-                   dot2.animate().scaleX(2); dot1.animate().scaleX(1);
-                   dot2.animate().scaleY(2); dot1.animate().scaleY(1);
-                   Button button1 = (Button) findViewById(R.id.startBtn);
-                   button1.setAlpha(0);
-                   button1.animate().alpha(1).setDuration(500);
-                   NoteActivity.buttonEffect(button1, FirstUseActivity.this);
-
-               }
                 break;
             }
         }
         return false;
     }
-
 
 
 }

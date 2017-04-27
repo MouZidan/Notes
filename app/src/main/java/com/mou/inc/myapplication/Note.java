@@ -14,21 +14,22 @@ import java.util.TimeZone;
 public class Note implements Serializable {
 
     private long mDateTime; //creation time of the note
-    public String mTitle; //title of the note
+    private String mTitle; //title of the note
     private String mContent;
 
     private Boolean mNight;
 
     private Boolean mAlignment;
 
-    public Boolean mPin;
-    public static Boolean mPinR;
+    private Boolean mPin;
+    private static Boolean mPinR;
     private String mPinString;
 
     private String mHashtags;
+    private Boolean mReadable;
 
 
-    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags) {
+    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags, Boolean readable) {
         mDateTime = dateInMillis;
         mTitle = title;
         mContent = content;
@@ -36,6 +37,7 @@ public class Note implements Serializable {
         mAlignment = alignment;
         mPin = pinActiveS;
         mPinString = pinString;
+        mReadable = readable;
 
         mHashtags = hashtags;
         mPinR =mPin;
@@ -72,6 +74,9 @@ public class Note implements Serializable {
 
     public  void setHashtags(String hashtags){
         mHashtags=hashtags;
+    }
+    public void setReadable(Boolean readable) {
+        mReadable = readable;
     }
 
 
@@ -124,5 +129,8 @@ public class Note implements Serializable {
     }
 
 
+    public Boolean getReadable() {
+        return mReadable;
+    }
 
 }

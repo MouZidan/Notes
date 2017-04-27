@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         myToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorPrimary));
 
 
+
+
         //Check if password verification enabled
 
 

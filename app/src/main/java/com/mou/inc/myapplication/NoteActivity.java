@@ -13,18 +13,15 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,28 +30,22 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -66,11 +57,13 @@ import android.widget.ViewSwitcher;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -84,7 +77,7 @@ public class NoteActivity extends AppCompatActivity {
     private Note mLoadedNote;
 
     private EditText mEtTitle;
-    private EditText mEtContent;
+    public static EditText mEtContent;
 
     private FloatingActionMenu mMenu;
     private FloatingActionButton mInserttime;
@@ -126,15 +119,22 @@ public class NoteActivity extends AppCompatActivity {
 
     public static String userContentString;
 
+
 private int counter0=-1;
 
-
+    private float lastX;
+    private float lastY;
+    int screenHight;
+    int screenWidth;
     private PendingIntent pendingIntent;
 
 
     public static final String PREFS_NAME = "MyPrefsFile";
 
     private BottomSheetBehavior mBottomSheetBehavior2;
+    private String insertTimeCommand;
+    private Boolean mEditable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,6 +142,48 @@ private int counter0=-1;
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.background_material_light));
+
+
+
+
+        mEtTitle = (EditText) findViewById(R.id.note_et_title);
+        mEtContent = (EditText) findViewById(R.id.note_et_content);
+        mAlignmentBoolean =false;
+        mNightBoolean =false;
+        mEditable = true;
+
+
+
+        //check if view/edit note bundle is set, otherwise user wants to create new note
+        mFileName = getIntent().getStringExtra(Utilities.EXTRAS_NOTE_FILENAME);
+        if(mFileName != null && !mFileName.isEmpty() && mFileName.endsWith(Utilities.FILE_EXTENSION)) {
+            mLoadedNote = Utilities.getNoteByFileName(getApplicationContext(), mFileName);
+            if (mLoadedNote != null) {
+                //update the widgets from the loaded note
+                mEtTitle.setText(mLoadedNote.getTitle());
+                mEtContent.setText(mLoadedNote.getContent());
+                mNightBoolean=(mLoadedNote.getNight());
+                mAlignmentBoolean=(mLoadedNote.getAlignment());
+                mActivatePIN = (mLoadedNote.getPin());
+                mPINstring =(mLoadedNote.getPinString());
+                mEditable =(mLoadedNote.getReadable());
+
+
+
+                mNoteCreationTime = mLoadedNote.getDateTime();
+                mIsViewingOrUpdating = true;
+            }
+        } else { //user wants to create a new note
+            mNoteCreationTime = System.currentTimeMillis();
+            mIsViewingOrUpdating = false;
+            mActivatePIN = (false);
+
+
+
+        }
+
+
+
 
 
 
@@ -157,18 +199,15 @@ private int counter0=-1;
 
 
 
+
+
+
         TextView extraView = (TextView) findViewById(R.id.bottom_sheet_at_extra);
         extraView.setText("@; ");
 
 
 
 
-
-        mEtTitle = (EditText) findViewById(R.id.note_et_title);
-        mEtContent = (EditText) findViewById(R.id.note_et_content);
-
-        mAlignmentBoolean =false;
-        mNightBoolean =false;
 
 
 
@@ -177,8 +216,6 @@ private int counter0=-1;
         mBottomSheetBehavior2 = BottomSheetBehavior.from(bottomSheet2);
         mBottomSheetBehavior2.setPeekHeight(100);
         mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-
 
 
 
@@ -229,9 +266,41 @@ private int counter0=-1;
                                 //coloredSpanThread(selectionStartAt ,textWatcher);
 
 
+                                if(mEtContent.getText().toString().contains("%$SetNoteReadableOnly$%"))
+                                {
+                                   mEtContent.setText(mEtContent.getText().toString().replace("%$SetNoteReadableOnly$%",""));
 
+                                    mEditable =false;
+
+                                    Toast.makeText(NoteActivity.this, "This note will be ReadableOnly after you save it,\n to reverse type \"%$ClearNoteReadableOnly$%\" ", Toast.LENGTH_SHORT).show();
+
+
+                                mEtTitle.append("*ReadableOnly*");
+                                        }
+
+
+                                if(mEtContent.getText().toString().contains("%$ClearNoteReadableOnly$%"))
+                                {
+                                    mEtContent.setText(mEtContent.getText().toString().replace("%$ClearNoteReadableOnly$%",""));
+
+                                    mEditable =true;
+
+                                    Toast.makeText(NoteActivity.this, "Note now is editable ", Toast.LENGTH_SHORT).show();
+
+
+                                    mEtTitle.setText(mEtTitle.getText().toString().replace("*ReadableOnly*",""));
+                                }
 
                                 coloredSpanThread(selectionStartAt,textWatcher);
+
+
+
+                                mouMessage("Dream big, Work hard. yakosomk","%$MouMessageToSale7$%");
+                                mouMessage("kosomak ya 3lwa ya mtnak, @kosomk","%$MouMessageToSuper3lwa$%");
+                                mouMessage("Panda, as you know ..  I Don't Know What to Say.. i will Overcome this ?? IDK!","%$MouMessageToPanda$%");
+                                mouMessage("I wonder, if I come to you, at night - in dreams, in the day - as memories. Do I haunt your hours the way you haunted mine?" ,"%$MouMessageToOldPanda$%");
+                                mouMessage("Hmm, you should work harder because your dreams is big. \"no pain no gain\" ","%$MouMessageToHimSelf$%");
+
 
 
 
@@ -276,39 +345,31 @@ private int counter0=-1;
 
 
 
-        //check if view/edit note bundle is set, otherwise user wants to create new note
-        mFileName = getIntent().getStringExtra(Utilities.EXTRAS_NOTE_FILENAME);
-        if(mFileName != null && !mFileName.isEmpty() && mFileName.endsWith(Utilities.FILE_EXTENSION)) {
-            mLoadedNote = Utilities.getNoteByFileName(getApplicationContext(), mFileName);
-            if (mLoadedNote != null) {
-                //update the widgets from the loaded note
-                mEtTitle.setText(mLoadedNote.getTitle());
-                mEtContent.setText(mLoadedNote.getContent());
-                mNightBoolean=(mLoadedNote.getNight());
-                mAlignmentBoolean=(mLoadedNote.getAlignment());
-                mActivatePIN = (mLoadedNote.getPin());
-                mPINstring =(mLoadedNote.getPinString());
-
-
-
-                mNoteCreationTime = mLoadedNote.getDateTime();
-                mIsViewingOrUpdating = true;
-            }
-        } else { //user wants to create a new note
-            mNoteCreationTime = System.currentTimeMillis();
-            mIsViewingOrUpdating = false;
-            mActivatePIN = (false);
-
-
-
-        }
-
 
 
 
 bottomSheetClick();
         }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Log.i("key pressed", String.valueOf(event.getKeyCode()));
 
+        String cTxt=mEtContent.getText().toString();
+
+        if(Integer.valueOf(event.getKeyCode())==61){
+
+         int currentCharIndex= cTxt.charAt(mEtContent.getSelectionStart());
+            cTxt.replace(String.valueOf(cTxt.charAt(currentCharIndex)),"   ");
+
+        }
+
+
+
+
+
+
+        return super.dispatchKeyEvent(event);
+    }
 
     private void clickableHashtags(final TextWatcher textWatcher) {
         String txt = mEtContent.getText().toString();
@@ -382,7 +443,9 @@ bottomSheetClick();
 
                 final SpannableString atText = new SpannableString(mEtContent.getText().toString());
                 final Matcher matcherAt = Pattern.compile("@\\S+").matcher(atText);
-        String insertTimeCommand=" .cDAT";
+
+
+        
 
 
         if (selectionStartAt == 0 && mEtContent.getText().toString().contains(insertTimeCommand)) {
@@ -589,6 +652,15 @@ bottomSheetClick();
     @Override
     protected void onResume() { //app theme changing
         //PIN dialog
+        if(mEditable ==false){
+            mEtContent.setEnabled(false);
+            mEtTitle.setEnabled(false);
+
+        }else{
+            mEtContent.setEnabled(true);
+            mEtTitle.setEnabled(true);
+
+        }
         if(mActivatePIN == true) {
             CheckDialog checkPIN = new CheckDialog();
             checkPIN.showCheckDialog(this);
@@ -606,8 +678,13 @@ bottomSheetClick();
         }
 
 
+        if(mLoadedNote!=null) {
+            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + "\" " + mEtTitle.getText() + " \" Note" + "</font>"));
+        }else{            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + ""  + "</font>"));
+        }
 
-       getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + "\" "+mEtTitle.getText() +" \" Note" + "</font>"));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        insertTimeCommand = " ."+preferences.getString("insert_time_command", "DEFAULT");
 
 
         super.onResume();
@@ -654,6 +731,13 @@ bottomSheetClick();
                 final Dialog fontSize =new Dialog(NoteActivity.this );
                 fontSize.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 fontSize.setContentView(R.layout.change_font_size_dialog);
+
+                Window window = fontSize.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+
+
+                window.setAttributes(wlp);
+
 
                 fontSize.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 Button setBtn =(Button) fontSize.findViewById(R.id.set_fontsize);
@@ -830,7 +914,37 @@ bottomSheetClick();
                 String firsttime = "Change your PIN.";
                 alert.showDialog(this, firsttime);}
     }
+public void getUrlText() throws IOException {
+    final String[] fullString = {""};
 
+    Thread t = new Thread() {
+        public void run() {
+            try {
+                URL url = new URL("https://en.wikipedia.org/wiki/George_Calvert,_1st_Baron_Baltimore");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fullString[0] += line;
+                }
+
+                reader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    t.start();
+    runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+
+            mEtContent.setText(fullString[0]);
+
+        }
+    });
+
+}
     public void bottomSheetClick(){
         ImageButton selectAll =(ImageButton)findViewById(R.id.select_all_bs);
         ImageButton copy =(ImageButton)findViewById(R.id.copy_bs);
@@ -842,6 +956,10 @@ bottomSheetClick();
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
+
                 if(mEtContent.isFocused()){mEtContent.setSelection(0,mEtContent.getText().toString().length());
                 }else if(mEtTitle.isFocused()){mEtTitle.setSelection(0,mEtTitle.getText().toString().length());}
             }
@@ -1215,6 +1333,21 @@ bottomSheetClick();
 
         /**Test**/
 
+
+        public void mouMessage(String message,String command){
+
+            if(mEtContent.getText().toString().contains(command))
+            {
+                mEtContent.setText(mEtContent.getText().toString().replace(command,"\n"+message));
+
+
+                Toast.makeText(NoteActivity.this, command, Toast.LENGTH_SHORT).show();
+
+
+            }
+
+        }
+
     public void insertTime(View view) {
         Calendar calendar;
         String currentDateTimeString;
@@ -1353,11 +1486,13 @@ return currentDateTimeString;
         String content = mEtContent.getText().toString();
         Boolean night = mNightBoolean;
         Boolean alignment = mAlignmentBoolean;
+        Boolean editable = mEditable;
 
         Boolean pinActiveS = mActivatePIN;
         String pinString = mPINstring;
 
         String hashtags =mHashtags;
+
 
 
 
@@ -1381,7 +1516,7 @@ return currentDateTimeString;
             mNoteCreationTime = System.currentTimeMillis();
         }
         //finally save the note!
-        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags))) { //success!
+        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags, editable))) { //success!
             //tell user the note was saved!
             Toast.makeText(this, "note has been saved", Toast.LENGTH_SHORT).show();
         } else { //failed to save the note! but this should not really happen :P :D :|
