@@ -37,7 +37,6 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -63,7 +62,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -75,6 +76,8 @@ public class NoteActivity extends AppCompatActivity {
     private long mNoteCreationTime;
     private String mFileName;
     private Note mLoadedNote;
+    boolean resumed;
+
 
     private EditText mEtTitle;
     public static EditText mEtContent;
@@ -142,32 +145,29 @@ private int counter0=-1;
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.background_material_light));
-
-
+        resumed=true;
 
 
         mEtTitle = (EditText) findViewById(R.id.note_et_title);
         mEtContent = (EditText) findViewById(R.id.note_et_content);
-        mAlignmentBoolean =false;
-        mNightBoolean =false;
+        mAlignmentBoolean = false;
+        mNightBoolean = false;
         mEditable = true;
-
 
 
         //check if view/edit note bundle is set, otherwise user wants to create new note
         mFileName = getIntent().getStringExtra(Utilities.EXTRAS_NOTE_FILENAME);
-        if(mFileName != null && !mFileName.isEmpty() && mFileName.endsWith(Utilities.FILE_EXTENSION)) {
+        if (mFileName != null && !mFileName.isEmpty() && mFileName.endsWith(Utilities.FILE_EXTENSION)) {
             mLoadedNote = Utilities.getNoteByFileName(getApplicationContext(), mFileName);
             if (mLoadedNote != null) {
                 //update the widgets from the loaded note
                 mEtTitle.setText(mLoadedNote.getTitle());
                 mEtContent.setText(mLoadedNote.getContent());
-                mNightBoolean=(mLoadedNote.getNight());
-                mAlignmentBoolean=(mLoadedNote.getAlignment());
+                mNightBoolean = (mLoadedNote.getNight());
+                mAlignmentBoolean = (mLoadedNote.getAlignment());
                 mActivatePIN = (mLoadedNote.getPin());
-                mPINstring =(mLoadedNote.getPinString());
-                mEditable =(mLoadedNote.getReadable());
-
+                mPINstring = (mLoadedNote.getPinString());
+                mEditable = (mLoadedNote.getReadable());
 
 
                 mNoteCreationTime = mLoadedNote.getDateTime();
@@ -179,12 +179,7 @@ private int counter0=-1;
             mActivatePIN = (false);
 
 
-
         }
-
-
-
-
 
 
         //overridePendingTransition(0, 0);//canceling layout transition
@@ -192,24 +187,13 @@ private int counter0=-1;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 
-
-        mLayout =(LinearLayout)findViewById(R.id.linearLayout) ;
+        mLayout = (LinearLayout) findViewById(R.id.linearLayout);
         mMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         mInserttime = (FloatingActionButton) findViewById(R.id.fab_insertTime);
 
 
-
-
-
-
         TextView extraView = (TextView) findViewById(R.id.bottom_sheet_at_extra);
         extraView.setText("@; ");
-
-
-
-
-
-
 
 
         final View bottomSheet2 = findViewById(R.id.bottom_sheet2);
@@ -218,107 +202,109 @@ private int counter0=-1;
         mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
 
 
-
         mMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean opened) {
-                if(mMenu.isOpened() && (!mHashtags.equals("")|!mAt.equals("")) ){
+                if (mMenu.isOpened() && (!mHashtags.equals("") | !mAt.equals(""))) {
 
                     mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-                }else mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } else mBottomSheetBehavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
             }
         });
 
-                mEtContent.addTextChangedListener(new TextWatcher() {
-                    CountDownTimer timer = null;
+        mEtContent.addTextChangedListener(new TextWatcher() {
+            CountDownTimer timer = null;
 
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(mEtContent.getText().toString().length()!=0&& mEtContent.getSelectionStart()!=0) {
+                    Character currentChar = mEtContent.getText().toString().charAt(mEtContent.getSelectionStart() - 1);
+
+                    if (currentChar.equals('@')) {
+                        suggMenu(true);
+
+                    } else {
+                        suggMenu(false);
+
+                    }
+                }
+
+                final TextWatcher textWatcher = this;
+
+                if (timer != null) {
+                    timer.cancel();
+                }
+
+
+                timer = new CountDownTimer(100, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
 
                     }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    public void onFinish() {
 
-                        final TextWatcher textWatcher=this;
+                        final int selectionStartHash = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
+                        final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
 
-                        if (timer != null) {
-                            timer.cancel();
+                        //do what you wish
+
+                        //coloredSpanThread(selectionStartAt ,textWatcher);
+
+
+                        if (mEtContent.getText().toString().contains("%$SetNoteReadableOnly$%")) {
+                            mEtContent.setText(mEtContent.getText().toString().replace("%$SetNoteReadableOnly$%", ""));
+
+                            mEditable = false;
+
+                            Toast.makeText(NoteActivity.this, "This note will be ReadableOnly after you save it,\n to reverse type \"%$ClearNoteReadableOnly$%\" ", Toast.LENGTH_SHORT).show();
+
+
+                            mEtTitle.append("*ReadableOnly*");
                         }
 
 
-                        timer = new CountDownTimer(100, 1000) {
+                        if (mEtContent.getText().toString().contains("%$ClearNoteReadableOnly$%")) {
+                            mEtContent.setText(mEtContent.getText().toString().replace("%$ClearNoteReadableOnly$%", ""));
 
-                            public void onTick(long millisUntilFinished) {
+                            mEditable = true;
 
-                            }
-
-                            public void onFinish() {
-
-                                final int selectionStartHash = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
-                                final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
-
-                                //do what you wish
-
-                                //coloredSpanThread(selectionStartAt ,textWatcher);
+                            Toast.makeText(NoteActivity.this, "Note now is editable ", Toast.LENGTH_SHORT).show();
 
 
-                                if(mEtContent.getText().toString().contains("%$SetNoteReadableOnly$%"))
-                                {
-                                   mEtContent.setText(mEtContent.getText().toString().replace("%$SetNoteReadableOnly$%",""));
+                            mEtTitle.setText(mEtTitle.getText().toString().replace("*ReadableOnly*", ""));
+                        }
 
-                                    mEditable =false;
-
-                                    Toast.makeText(NoteActivity.this, "This note will be ReadableOnly after you save it,\n to reverse type \"%$ClearNoteReadableOnly$%\" ", Toast.LENGTH_SHORT).show();
+                        coloredSpanThread(selectionStartAt, textWatcher);
 
 
-                                mEtTitle.append("*ReadableOnly*");
-                                        }
-
-
-                                if(mEtContent.getText().toString().contains("%$ClearNoteReadableOnly$%"))
-                                {
-                                    mEtContent.setText(mEtContent.getText().toString().replace("%$ClearNoteReadableOnly$%",""));
-
-                                    mEditable =true;
-
-                                    Toast.makeText(NoteActivity.this, "Note now is editable ", Toast.LENGTH_SHORT).show();
-
-
-                                    mEtTitle.setText(mEtTitle.getText().toString().replace("*ReadableOnly*",""));
-                                }
-
-                                coloredSpanThread(selectionStartAt,textWatcher);
-
-
-
-                                mouMessage("Dream big, Work hard. yakosomk","%$MouMessageToSale7$%");
-                                mouMessage("kosomak ya 3lwa ya mtnak, @kosomk","%$MouMessageToSuper3lwa$%");
-                                mouMessage("Panda, as you know ..  I Don't Know What to Say.. i will Overcome this ?? IDK!","%$MouMessageToPanda$%");
-                                mouMessage("I wonder, if I come to you, at night - in dreams, in the day - as memories. Do I haunt your hours the way you haunted mine?" ,"%$MouMessageToOldPanda$%");
-                                mouMessage("Hmm, you should work harder because your dreams is big. \"no pain no gain\" ","%$MouMessageToHimSelf$%");
-
-
-
-
-
-                            }
-
-                        }.start();
-
-
+                        mouMessage("Dream big, Work hard. yakosomk", "%$MouMessageToSale7$%");
+                        mouMessage("kosomak ya 3lwa ya mtnak, @kosomk", "%$MouMessageToSuper3lwa$%");
+                        mouMessage("Panda, as you know ..  I Don't Know What to Say.. i will Overcome this ?? IDK!", "%$MouMessageToPanda$%");
+                        mouMessage("I wonder, if I come to you, at night - in dreams, in the day - as memories. Do I haunt your hours the way you haunted mine?", "%$MouMessageToOldPanda$%");
+                        mouMessage("Hmm, you should work harder because your dreams is big. \"no pain no gain\" ", "%$MouMessageToHimSelf$%");
 
 
                     }
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                }.start();
 
-                    }
-                });
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 //set
         mEtContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -334,43 +320,15 @@ private int counter0=-1;
                 mMenu.close(true);
 
 
-
 //                Toast.makeText(NoteActivity.this, Utilities.getFileNandD(NoteActivity.this,String.valueOf(mLoadedNote.getDateTime())+".bin"), Toast.LENGTH_SHORT).show();
 
             }
         });
 
 
-
-
-
-
-
-
-
-bottomSheetClick();
-        }
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        Log.i("key pressed", String.valueOf(event.getKeyCode()));
-
-        String cTxt=mEtContent.getText().toString();
-
-        if(Integer.valueOf(event.getKeyCode())==61){
-
-         int currentCharIndex= cTxt.charAt(mEtContent.getSelectionStart());
-            cTxt.replace(String.valueOf(cTxt.charAt(currentCharIndex)),"   ");
-
-        }
-
-
-
-
-
-
-        return super.dispatchKeyEvent(event);
+        bottomSheetClick();
+        suggMenu(false);
     }
-
     private void clickableHashtags(final TextWatcher textWatcher) {
         String txt = mEtContent.getText().toString();
         Pattern pattern = Pattern.compile("#\\S+");
@@ -438,7 +396,6 @@ bottomSheetClick();
     }
     private void coloredSpanThread(final int selectionStartAt , final TextWatcher textWatcher){
 
-
         mEtContent.removeTextChangedListener(textWatcher);
 
                 final SpannableString atText = new SpannableString(mEtContent.getText().toString());
@@ -459,7 +416,7 @@ bottomSheetClick();
 
         }
 
-        String s = mEtContent.getText().toString();
+        final String s = mEtContent.getText().toString();
         int counter = 0;
         for( int i=0; i<s.length(); i++ ) {
             if( s.charAt(i) == '@' ) {
@@ -467,34 +424,57 @@ bottomSheetClick();
             }
         }
 
-                        while (matcherAt.find() && counter!=counter0 && counter<400 )  {
-
-                            if (selectionStartAt == 0) {
-
-                                final int oldCursorPosition = mEtContent.getSelectionStart();
-
-                                atText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.atColor))
-                                        , matcherAt.start(), matcherAt.end(), 0);
-
-                                mEtContent.setText(atText);
-                                try {
-                                    mEtContent.setSelection(oldCursorPosition);
-                                } catch (IndexOutOfBoundsException e) {
-                                }
+        //s = contentString
 
 
-                                //mEtTitle.setText(beforeEdits);
 
-                            }
 
-                            clickableHashtags(textWatcher);
-                            clickableAt();
 
-                        }
-                        if (counter>= 400)
-                        {
-                            Toast.makeText(this, "you reached the maximum amount of '@' at this note (400 @)\n Warning:if you add more the app probably will crash", Toast.LENGTH_LONG).cancel();
-                        }else if(counter==0){counter0=-1;}else {counter0=counter;}
+
+        String selectedWord = "";
+        int length = 0;
+        int startSelection = mEtContent.getSelectionStart();
+        for(String currentWord : mEtContent.getText().toString().split(" ")) {
+            length = length + currentWord.length() + 1;
+            if(length > startSelection) {
+                selectedWord = currentWord;
+                break;
+            }
+        }
+
+
+        while (( matcherAt.find() && counter<400 && selectedWord.contains("@") )|| matcherAt.find()&&resumed==true)  {
+            Toast.makeText(this, "resumed while span ", Toast.LENGTH_SHORT).show();
+
+            if (selectionStartAt == 0 && s.charAt(s.length()-1)!=' ' ) {
+
+
+                final int oldCursorPosition = mEtContent.getSelectionStart();
+
+                atText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(NoteActivity.this, R.color.atColor))
+                        , matcherAt.start(), matcherAt.end(), 0);
+
+                mEtContent.setText(atText);
+                try {
+                    mEtContent.setSelection(oldCursorPosition);
+                } catch (IndexOutOfBoundsException e) {
+
+                }
+
+
+                if(resumed==true){resumed=false;}
+                //mEtTitle.setText(beforeEdits);
+
+            }
+
+            clickableHashtags(textWatcher);
+            clickableAt();
+
+        }
+        if (counter>= 400)
+        {
+            Toast.makeText(this, "you reached the maximum amount of '@' at this note (400 @)\n Warning:if you add more the app probably will crash", Toast.LENGTH_LONG).cancel();
+        }else if(counter==0){counter0=-1;}else {counter0=counter;}
 
         mEtContent.addTextChangedListener(textWatcher);
 
@@ -605,6 +585,77 @@ bottomSheetClick();
 
     }
 
+    public void suggMenu(Boolean show){
+        Character atC = null;
+        final LinearLayout container =(LinearLayout)findViewById(R.id.floatingSM);
+        container.setVisibility(View.VISIBLE);
+
+
+        TextView place =(TextView)findViewById(R.id.placeSug);
+        TextView person =(TextView)findViewById(R.id.personSug);
+        TextView currentDate =(TextView)findViewById(R.id.currentDateSug);
+
+        if(show==true){container.setVisibility(View.VISIBLE);
+            String contentString =mEtContent.getText().toString();
+
+            atC =contentString.charAt(mEtContent.getSelectionStart()-1);
+
+            StringBuilder myName = new StringBuilder(contentString);
+
+
+
+
+
+            final Character finalAtC = atC;
+            place.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int cursorPosition = mEtContent.getSelectionStart();
+                    String contentString =mEtContent.getText().toString();
+
+                    String suggested ="Place:";
+
+                    mEtContent.getText().insert(cursorPosition,suggested);
+                    container.setVisibility(View.GONE);
+
+                    Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+            person.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int cursorPosition = mEtContent.getSelectionStart();
+                    String contentString =mEtContent.getText().toString();
+
+                    String suggested ="Person:";
+
+                    mEtContent.getText().insert(cursorPosition,suggested);
+                    container.setVisibility(View.GONE);
+
+                    Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+            currentDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int cursorPosition = mEtContent.getSelectionStart();
+                    String contentString =mEtContent.getText().toString();
+
+                    String suggested =currentDateTimeString();
+
+                    mEtContent.getText().insert(cursorPosition,suggested);
+                    container.setVisibility(View.GONE);
+
+                    Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }else{container.setVisibility(View.GONE);}
+    }
+
     private ClickableSpan getClickableSpanAt(final String word) {
         return new ClickableSpan() {
             final String mWord;
@@ -616,27 +667,35 @@ bottomSheetClick();
             public void onClick(View widget) {
                 Log.d("tapped on:", mWord);
 
+                mEtTitle.setText(mWord.substring(0,5));
+
+                if(mWord.length()>=6&& mWord.substring(0,6).equals("Place:")){
+                    //this is place fo something...
+                    Toast.makeText(NoteActivity.this,"this is place", Toast.LENGTH_SHORT).show();
+                }/* mEtTitle.setText("not DATE")*/ ;
+
+
                 String contetnS = mEtContent.getText().toString();
                 int start = contetnS.indexOf(mWord) - 1;
                 int end = start + mWord.length() + 1;
                 mEtContent.setSelection(start, end);
 
-                if (mWord.length() >= 3 && mWord.length() ==20) {
+                if (mWord.length() >= 3 && mWord.length() == 20) {
                     if (
-                        mWord.charAt(3) == '_' &&mWord.charAt(6) == '_'&&mWord.charAt(11) == '_'  &&mWord.charAt(17) == '_'
-                        &&Character.isLetter(mWord.charAt(0))&&Character.isLetter(mWord.charAt(1))&&Character.isLetter(mWord.charAt(2))
-                        &&Character.isLetter(mWord.charAt(mWord.length() -1))  &&Character.isLetter(mWord.charAt(mWord.length()-2))
-                        &&Character.isDigit(mWord.charAt(10))&&Character.isDigit(mWord.charAt(9))
-                        &&Character.isDigit(mWord.charAt(5))&&Character.isDigit(mWord.charAt(4))
-                        &&Character.isDigit(mWord.charAt(8))&&Character.isDigit(mWord.charAt(7))
-                        ) {
+                            mWord.charAt(3) == '_' && mWord.charAt(6) == '_' && mWord.charAt(11) == '_' && mWord.charAt(17) == '_'
+                                    && Character.isLetter(mWord.charAt(0)) && Character.isLetter(mWord.charAt(1)) && Character.isLetter(mWord.charAt(2))
+                                    && Character.isLetter(mWord.charAt(mWord.length() - 1)) && Character.isLetter(mWord.charAt(mWord.length() - 2))
+                                    && Character.isDigit(mWord.charAt(10)) && Character.isDigit(mWord.charAt(9))
+                                    && Character.isDigit(mWord.charAt(5)) && Character.isDigit(mWord.charAt(4))
+                                    && Character.isDigit(mWord.charAt(8)) && Character.isDigit(mWord.charAt(7))
+                            ) {
                         //this is date .. do something here
 
-                    } else mEtTitle.setText("not DATE");
+                    } else {
 
+                    }//else mEtTitle.setText("not DATE");
 
-                }else mEtTitle.setText("not DATE");
-
+                }
             }
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);

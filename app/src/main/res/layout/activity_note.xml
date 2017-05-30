@@ -204,7 +204,47 @@ android:id="@+id/linearLayout"
                 />
         </com.github.clans.fab.FloatingActionMenu>
 
-</FrameLayout>
+        <LinearLayout
+
+            android:id="@+id/floatingSM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@android:drawable/alert_dark_frame"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:id="@+id/placeSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="place"
+                android:textColor="@color/atColor" />
+
+            <TextView
+                android:id="@+id/personSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="person"
+                android:textColor="@color/atColor"
+
+                />
+            <TextView
+                android:id="@+id/currentDateSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="Current date"
+                android:textColor="@color/atColor"
+
+                />
+
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 
     <android.support.v4.widget.NestedScrollView
@@ -291,7 +331,7 @@ android:id="@+id/linearLayout"
 
 
         <LinearLayout
-
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -300,7 +340,6 @@ android:id="@+id/linearLayout"
             <TextView
                 android:layout_width="wrap_content"
                 android:id="@+id/bottom_sheet_at_extra"
-
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
 
