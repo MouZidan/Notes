@@ -49,7 +49,7 @@ public class MouMethods {
                         if (v.getY() >= screenHight[0] - v.getHeight())
                             v.setY(screenHight[0] - v.getHeight());
 
-                        if (v.getX() > screenWidth[0] / 2) v.setX(screenWidth[0] - v.getWidth());
+                        if (v.getX() > screenWidth[0] / 1.35) v.setX(screenWidth[0] - v.getWidth());
 
 
                 }

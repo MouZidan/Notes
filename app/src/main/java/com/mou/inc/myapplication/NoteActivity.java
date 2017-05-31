@@ -214,6 +214,8 @@ private int counter0=-1;
             }
         });
 
+
+
         mEtContent.addTextChangedListener(new TextWatcher() {
             CountDownTimer timer = null;
 
@@ -236,6 +238,8 @@ private int counter0=-1;
 
                     }
                 }
+
+                if(selectedWord().equals("goFirstUse")){startActivity(new Intent(NoteActivity.this, FirstUseActivity.class));}
 
                 final TextWatcher textWatcher = this;
 
@@ -286,11 +290,6 @@ private int counter0=-1;
                         coloredSpanThread(selectionStartAt, textWatcher);
 
 
-                        mouMessage("Dream big, Work hard. yakosomk", "%$MouMessageToSale7$%");
-                        mouMessage("kosomak ya 3lwa ya mtnak, @kosomk", "%$MouMessageToSuper3lwa$%");
-                        mouMessage("Panda, as you know ..  I Don't Know What to Say.. i will Overcome this ?? IDK!", "%$MouMessageToPanda$%");
-                        mouMessage("I wonder, if I come to you, at night - in dreams, in the day - as memories. Do I haunt your hours the way you haunted mine?", "%$MouMessageToOldPanda$%");
-                        mouMessage("Hmm, you should work harder because your dreams is big. \"no pain no gain\" ", "%$MouMessageToHimSelf$%");
 
 
                     }
@@ -324,6 +323,7 @@ private int counter0=-1;
 
             }
         });
+
 
 
         bottomSheetClick();
@@ -394,6 +394,23 @@ private int counter0=-1;
         }
 
     }
+    public String selectedWord(){
+
+        //return's word under cursor.
+
+
+        String selectedWord = "";
+        int length = 0;
+        int startSelection = mEtContent.getSelectionStart();
+        for(String currentWord : mEtContent.getText().toString().split(" ")) {
+            length = length + currentWord.length() + 1;
+            if(length > startSelection) {
+                selectedWord = currentWord;
+                break;
+            }
+        }
+        return selectedWord;
+    }
     private void coloredSpanThread(final int selectionStartAt , final TextWatcher textWatcher){
 
         mEtContent.removeTextChangedListener(textWatcher);
@@ -431,20 +448,10 @@ private int counter0=-1;
 
 
 
-        String selectedWord = "";
-        int length = 0;
-        int startSelection = mEtContent.getSelectionStart();
-        for(String currentWord : mEtContent.getText().toString().split(" ")) {
-            length = length + currentWord.length() + 1;
-            if(length > startSelection) {
-                selectedWord = currentWord;
-                break;
-            }
-        }
 
 
-        while (( matcherAt.find() && counter<400 && selectedWord.contains("@") )|| matcherAt.find()&&resumed==true)  {
-            Toast.makeText(this, "resumed while span ", Toast.LENGTH_SHORT).show();
+
+        while (( matcherAt.find() && counter<400 && selectedWord().contains("@") )|| matcherAt.find()&&resumed==true)  {
 
             if (selectionStartAt == 0 && s.charAt(s.length()-1)!=' ' ) {
 
@@ -588,14 +595,35 @@ private int counter0=-1;
     public void suggMenu(Boolean show){
         Character atC = null;
         final LinearLayout container =(LinearLayout)findViewById(R.id.floatingSM);
-        container.setVisibility(View.VISIBLE);
+
+
 
 
         TextView place =(TextView)findViewById(R.id.placeSug);
         TextView person =(TextView)findViewById(R.id.personSug);
         TextView currentDate =(TextView)findViewById(R.id.currentDateSug);
 
-        if(show==true){container.setVisibility(View.VISIBLE);
+        MouMethods.dragableView(container,this);
+
+        final int animationLength =200;
+        int containerState =container.getVisibility();
+
+        if(show==true &&containerState == View.GONE){
+            container.setVisibility(View.VISIBLE);
+            container.animate().scaleX(1.2f).setDuration(animationLength).start();
+            container.animate().scaleY(1.2f).setDuration(animationLength).start();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    container.animate().scaleX(1.0f).setDuration(animationLength/2).start();
+                    container.animate().scaleY(1.0f).setDuration(animationLength/2).start();                }
+            }, animationLength);
+
+
+
+
+
             String contentString =mEtContent.getText().toString();
 
             atC =contentString.charAt(mEtContent.getSelectionStart()-1);
@@ -616,7 +644,7 @@ private int counter0=-1;
                     String suggested ="Place:";
 
                     mEtContent.getText().insert(cursorPosition,suggested);
-                    container.setVisibility(View.GONE);
+                    suggMenu(false);
 
                     Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
 
@@ -632,7 +660,7 @@ private int counter0=-1;
                     String suggested ="Person:";
 
                     mEtContent.getText().insert(cursorPosition,suggested);
-                    container.setVisibility(View.GONE);
+                    suggMenu(false);
 
                     Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
 
@@ -647,13 +675,31 @@ private int counter0=-1;
                     String suggested =currentDateTimeString();
 
                     mEtContent.getText().insert(cursorPosition,suggested);
-                    container.setVisibility(View.GONE);
+                    suggMenu(false);
 
                     Toast.makeText(NoteActivity.this, "Replaced  x ", Toast.LENGTH_SHORT).show();
 
                 }
             });
-        }else{container.setVisibility(View.GONE);}
+        }else if(containerState == View.VISIBLE &&show==false){
+
+
+            container.animate().scaleX(0.001f).setDuration(animationLength/2).start();
+            container.animate().scaleY(0.001f).setDuration(animationLength/2).start();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    container.setVisibility(View.GONE);
+
+                }
+            }, animationLength);
+
+
+
+
+
+        }
     }
 
     private ClickableSpan getClickableSpanAt(final String word) {

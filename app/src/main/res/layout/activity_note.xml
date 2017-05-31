@@ -110,141 +110,6 @@ android:id="@+id/linearLayout"
 
 
 </LinearLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fab_frame"
-
-        >
-
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/fab_menu"
-            app:menu_icon="@drawable/ic_add"
-            android:layout_gravity="top|right"
-            android:layout_marginTop="70dp"
-
-            app:menu_fab_size="mini"
-            app:menu_colorNormal="@android:color/transparent"
-            app:menu_colorPressed="@android:color/transparent"
-
-            app:menu_showShadow="false"
-            app:menu_openDirection="down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:menu_fab_hide_animation="@anim/fab_slide_out_to_right"
-            app:menu_fab_show_animation="@anim/fab_slide_in_from_right"
-            android:layout_alignParentRight="true">
-
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_insertTime"
-                android:onClick="insertTime"
-                app:fab_size="mini"
-                app:fab_colorPressed="@color/background_material_light"
-                android:src="@drawable/ic_date"
-                app:fab_colorNormal="@color/colorAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp" />
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_alarm"
-                android:src="@drawable/ic_alarm"
-                android:onClick="setReminder"
-                app:fab_size="mini"
-                app:fab_colorNormal="@color/colorAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                app:fab_colorPressed="@color/background_material_light"
-                />
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_Night"
-                android:onClick="activateNight"
-                app:fab_size="mini"
-                android:src="@drawable/ic_night"
-                app:fab_colorNormal="@color/colorAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                app:fab_colorPressed="@color/background_material_light"
-                />
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_Center"
-                android:src="@drawable/ic_center"
-
-                android:onClick="activateCenter"
-                app:fab_size="mini"
-                app:fab_colorNormal="@color/colorAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                app:fab_colorPressed="@color/background_material_light"
-                />
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_Left"
-                android:onClick="activatePasswordDialog"
-                app:fab_size="mini"
-                android:src="@drawable/ic_locksolid"
-
-                app:fab_colorNormal="@color/colorAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                app:fab_colorPressed="@color/background_material_light"
-                />
-        </com.github.clans.fab.FloatingActionMenu>
-
-        <LinearLayout
-
-            android:id="@+id/floatingSM"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@android:drawable/alert_dark_frame"
-            android:orientation="vertical">
-
-            <TextView
-
-                android:id="@+id/placeSug"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="place"
-                android:textColor="@color/atColor" />
-
-            <TextView
-                android:id="@+id/personSug"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="person"
-                android:textColor="@color/atColor"
-
-                />
-            <TextView
-                android:id="@+id/currentDateSug"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="Current date"
-                android:textColor="@color/atColor"
-
-                />
-
-
-        </LinearLayout>
-
-    </FrameLayout>
 
 
     <android.support.v4.widget.NestedScrollView
@@ -358,5 +223,147 @@ android:id="@+id/linearLayout"
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/fab_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+
+            android:layout_gravity="top|right"
+            android:layout_marginTop="70dp"
+            app:menu_colorNormal="@android:color/transparent"
+
+            app:menu_colorPressed="@android:color/transparent"
+            app:menu_fab_hide_animation="@anim/fab_slide_out_to_right"
+            app:menu_fab_show_animation="@anim/fab_slide_in_from_right"
+            app:menu_fab_size="mini"
+            app:menu_icon="@drawable/ic_add"
+            app:menu_openDirection="down"
+            app:menu_showShadow="false">
+
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_insertTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="insertTime"
+                android:src="@drawable/ic_date"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_colorPressed="@color/background_material_light"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="setReminder"
+                android:src="@drawable/ic_alarm"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_colorPressed="@color/background_material_light"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Night"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="activateNight"
+                android:src="@drawable/ic_night"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_colorPressed="@color/background_material_light"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Center"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="activateCenter"
+                android:src="@drawable/ic_center"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_colorPressed="@color/background_material_light"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_Left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="activatePasswordDialog"
+                android:src="@drawable/ic_locksolid"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_colorPressed="@color/background_material_light"
+                app:fab_size="mini" />
+        </com.github.clans.fab.FloatingActionMenu>
+
+        <LinearLayout
+
+
+            android:id="@+id/floatingSM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="5dp"
+            android:background="@drawable/rounded_corners_hash"
+            android:orientation="vertical"
+            android:padding="5dp"
+            app:layout_anchor="@+id/fab_frame">
+
+            <TextView
+
+                android:id="@+id/placeSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="Place"
+                android:textColor="@color/colorSuggMenuText" />
+
+            <TextView
+                android:id="@+id/personSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="Person"
+                android:textColor="@color/colorSuggMenuText"
+
+                />
+
+            <TextView
+                android:id="@+id/currentDateSug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="Current date"
+                android:textColor="@color/colorSuggMenuText"
+
+                />
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

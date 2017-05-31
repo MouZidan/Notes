@@ -8,7 +8,7 @@
 
         <shape android:shape="rectangle"
             >
-            <solid android:color="@color/colorPrimaryNight" />
+            <solid android:color="@color/colorSuggMenuBG" />
 
             <corners
 

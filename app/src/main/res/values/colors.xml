@@ -20,6 +20,11 @@
     <color name="holo_green_dark">#33691e</color>
     <color name="holo_red_dark">#960d0d</color>
 
+    <color name="colorSuggMenuBG">#96607d8b</color>
+    <color name="colorSuggMenuText">#212121</color>
+
+
+
 
 
 </resources>
