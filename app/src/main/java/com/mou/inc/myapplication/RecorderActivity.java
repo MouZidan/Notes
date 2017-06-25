@@ -41,8 +41,6 @@ public class RecorderActivity extends AppCompatActivity {
 
 
 
-
-
         ImageButton recordBtn=(ImageButton)findViewById(R.id.recrod_button);
         recordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
