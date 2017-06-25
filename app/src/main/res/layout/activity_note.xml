@@ -326,10 +326,10 @@ android:id="@+id/linearLayout"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_margin="5dp"
-            android:background="@drawable/rounded_corners_hash"
+            android:background="@drawable/bg_shadow_rounded_8dp"
             android:orientation="vertical"
-            android:padding="5dp"
             app:layout_anchor="@+id/fab_frame">
+
 
             <TextView
 
@@ -359,7 +359,6 @@ android:id="@+id/linearLayout"
                 android:textColor="@color/colorSuggMenuText"
 
                 />
-
 
         </LinearLayout>
 

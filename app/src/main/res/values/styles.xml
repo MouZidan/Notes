@@ -14,22 +14,23 @@
         <item name="android:textColorPrimary">@color/colorPrimaryNight</item>
 
         <item name="android:windowActionBar">@style/InvisibleBackgroundTheme</item>
-        
+
     </style>
 
 
-    <style name="MyActionBarLight"  >
+    <style name="MyActionBarLight">
         <item name="android:textColor">@color/colorPrimaryNight</item>
         <item name="android:textColorSecondary">@color/colorPrimaryNight</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
+
     <style name="MyActionBarDark">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:background">@color/colorPrimaryNight</item>
     </style>
 
 
-    <style name="AppThemeDark"  parent="Theme.AppCompat.NoActionBar">
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:actionBarStyle">@style/MyActionBarDark</item>
         <item name="colorPrimary">@color/colorPrimaryNight</item>
@@ -58,7 +59,7 @@
 
     </style>
 
-    <style name="popupTheme" >
+    <style name="popupTheme">
 
         <item name="android:popupBackground">@drawable/rounded_cornersbottom</item>
     </style>
@@ -67,21 +68,25 @@
     <style name="CustomDialogHorizontal" parent="@android:style/Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/CustomDialogAnimationH</item>
     </style>
+
     <style name="CustomDialogAnimationH">
         <item name="android:windowEnterAnimation">@anim/translate_left_side</item>
         <item name="android:windowExitAnimation">@anim/translate_right_side</item>
     </style>
 
 
-
     <style name="CustomDialogVertical" parent="@android:style/Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/CustomDialogAnimationV</item>
     </style>
+
     <style name="CustomDialogAnimationV">
         <item name="android:windowEnterAnimation">@anim/translate_vertical_open</item>
         <item name="android:windowExitAnimation">@anim/translate_vertical_close</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

@@ -27,9 +27,14 @@ public class Note implements Serializable {
 
     private String mHashtags;
     private Boolean mReadable;
+    private int mType;
+
+    public static final int AUDIO=2080;
+    public static final int TEXT=6262;
 
 
-    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags, Boolean readable) {
+
+    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags, Boolean readable, int type) {
         mDateTime = dateInMillis;
         mTitle = title;
         mContent = content;
@@ -38,16 +43,22 @@ public class Note implements Serializable {
         mPin = pinActiveS;
         mPinString = pinString;
         mReadable = readable;
-
         mHashtags = hashtags;
         mPinR =mPin;
+        mType= type;
 
+
+    }
+
+
+
+    public void setDate(int type) {
+        mDateTime = type;
     }
 
     public void setDateTime(long dateTime) {
         mDateTime = dateTime;
     }
-
     public void setTitleR(String title) {
         mTitle = title;
     }
@@ -118,6 +129,10 @@ public class Note implements Serializable {
 
 
         return mPinR;
+    }
+    public int getType(){
+
+        return mType;
     }
     public String getPinString() {
         return mPinString;

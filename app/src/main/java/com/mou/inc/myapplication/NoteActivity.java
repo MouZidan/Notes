@@ -99,6 +99,7 @@ public class NoteActivity extends AppCompatActivity {
     private String mAt ="";
     private String internalAt="";
     private String internalAt0=null;
+    private int mType;
 
 
 
@@ -168,6 +169,7 @@ private int counter0=-1;
                 mActivatePIN = (mLoadedNote.getPin());
                 mPINstring = (mLoadedNote.getPinString());
                 mEditable = (mLoadedNote.getReadable());
+                mType=mLoadedNote.getType();
 
 
                 mNoteCreationTime = mLoadedNote.getDateTime();
@@ -240,6 +242,10 @@ private int counter0=-1;
                 }
 
                 if(selectedWord().equals("goFirstUse")){startActivity(new Intent(NoteActivity.this, FirstUseActivity.class));}
+                if(selectedWord().equals("setNoteAudio")){mType=Note.AUDIO;}
+                if(selectedWord().equals("setNoteText")){mType=Note.TEXT;}
+
+
 
                 final TextWatcher textWatcher = this;
 
@@ -596,6 +602,7 @@ private int counter0=-1;
         Character atC = null;
         final LinearLayout container =(LinearLayout)findViewById(R.id.floatingSM);
 
+        final int cursorPosition = mEtContent.getSelectionStart();
 
 
 
@@ -638,7 +645,6 @@ private int counter0=-1;
             place.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int cursorPosition = mEtContent.getSelectionStart();
                     String contentString =mEtContent.getText().toString();
 
                     String suggested ="Place:";
@@ -654,7 +660,6 @@ private int counter0=-1;
             person.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int cursorPosition = mEtContent.getSelectionStart();
                     String contentString =mEtContent.getText().toString();
 
                     String suggested ="Person:";
@@ -669,7 +674,6 @@ private int counter0=-1;
             currentDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int cursorPosition = mEtContent.getSelectionStart();
                     String contentString =mEtContent.getText().toString();
 
                     String suggested =currentDateTimeString();
@@ -1597,6 +1601,7 @@ return currentDateTimeString;
         String pinString = mPINstring;
 
         String hashtags =mHashtags;
+        int type =mType;
 
 
 
@@ -1621,7 +1626,7 @@ return currentDateTimeString;
             mNoteCreationTime = System.currentTimeMillis();
         }
         //finally save the note!
-        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags, editable))) { //success!
+        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags, editable, type))) { //success!
             //tell user the note was saved!
             Toast.makeText(this, "note has been saved", Toast.LENGTH_SHORT).show();
         } else { //failed to save the note! but this should not really happen :P :D :|

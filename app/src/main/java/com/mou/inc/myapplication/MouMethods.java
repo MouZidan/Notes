@@ -9,6 +9,12 @@ public class MouMethods {
 
 
 
+    public static final int FADE_IN=11;
+
+    public static final int FADE_OUT=00;
+
+
+
     public static void dragableView(View v, Activity activity) {
         final float[] lastX = new float[1];
         final float[] lastY = new float[1];
@@ -107,6 +113,20 @@ public class MouMethods {
                 return true;
             }
         });
+    }
+
+    public static void fadeView(View v,int CONST){
+
+
+        if(CONST==FADE_IN) {
+            v.animate().alpha(0.0f).setDuration(10).start();
+            v.animate().alpha(1.0f).setDuration(1000).start();
+        }else if(CONST==FADE_OUT){
+            v.animate().alpha(0.0f).setDuration(1000).start();
+
+        }
+
+
     }
 
 }

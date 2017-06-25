@@ -82,16 +82,15 @@ public class FirstUseActivity extends AppCompatActivity {
                 return true;
             }
         });*/
+/*
 
 
         String title = "\uD83D\uDE04Hi!";
-        content = "You can insert date and time in your note like this \"@Apr_24_2017_11.55_PM\" " +
-                "through the float button or you can do this using " +
-                "the runtime command detection and simply type {.cDAT} (without brackets) after a space," +
-                " also all commands can be customized in Settings.";
+        content ="........new note.........";
 
 
         Utilities.saveNote(this, new Note(System.currentTimeMillis(), title+"", content+"", false, false, false, "", "your note app",false));
+*/
 
     }
 

@@ -1,8 +1,6 @@
 package com.mou.inc.myapplication;
 
-import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,11 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -203,7 +197,7 @@ public void newCreate(){
     window.setAttributes(lp);
 
 
-    String[] items = new String[]{"Note", "TODO-list"};
+    String[] items = new String[]{"Text Note", "Audio Note"};
 
     Integer[] icons={R.drawable.ic_cancel ,R.drawable.ic_pen};
 
@@ -219,6 +213,10 @@ public void newCreate(){
                 newCreate.cancel();
             }
             if(position==1){
+                Intent i=new Intent(MainActivity.this,RecorderActivity.class);
+                startActivity(i);
+
+
 
 
                 newCreate.cancel();
@@ -299,23 +297,21 @@ public void newCreate(){
 
 
 
-                final Dialog dialog = new Dialog(MainActivity.this, R.style.CustomDialogHorizontal);
+                final Dialog dialogNoteItem = new Dialog(MainActivity.this, R.style.CustomDialogHorizontal);
 
-                dialog.setContentView(R.layout.options_dialog);
-                TextView dialogHeader =(TextView)dialog.findViewById(R.id.dialog_header);
+                dialogNoteItem.setContentView(R.layout.options_dialog);
+                dialogNoteItem.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+                TextView dialogHeader =(TextView)dialogNoteItem.findViewById(R.id.dialog_header);
                 String selected = mListview.getItemAtPosition(position).toString();
-
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
                 String[] options = new String[]{"Delete", "Rename"};
                 int[] optionsIcon = new int[]{R.drawable.ic_cancel ,R.drawable.ic_pen};
                 ListAdapter adapter = new ArrayAdapter<String>(MainActivity.this ,R.layout.view_list_dialog, R.id.textOptions, options);
-                ListView lv =(ListView)dialog.findViewById(R.id.lv_target);
+                ListView lv =(ListView)dialogNoteItem.findViewById(R.id.lv_target);
 
-                final ImageView oprtionsIcon =(ImageView)dialog.findViewById(R.id.imageOptions);
+                final ImageView oprtionsIcon =(ImageView)dialogNoteItem.findViewById(R.id.imageOptions);
+
 
 
 
@@ -332,20 +328,13 @@ public void newCreate(){
 
                         if(position == 1){ //Remame
 
+                            dialogNoteItem.cancel();
 
 
-                            Dialog renameDialog =new Dialog(MainActivity.this );
+
+                            Dialog renameDialog =new Dialog(MainActivity.this, R.style.CustomDialogHorizontal);
+                            dialogNoteItem.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                             setContentView(R.layout.rename_dialog_mainactivity);
-                            renameDialog.show();
-
-                            renameDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-
-                            renameDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                            EditText mEtRename =(EditText)renameDialog.findViewById(R.id.rename_et);
-                            //String renamed = mEtRename.getText().toString();
-
-                            renameDialog.cancel();
 
 
 
@@ -381,7 +370,7 @@ public void newCreate(){
                                     })
                                     .setNegativeButton("NO", null); //do nothing on clicking NO button :P
 
-                            dialogDelete.show();
+                             dialogDelete.show();
 
 
 
@@ -404,17 +393,17 @@ public void newCreate(){
 
 
 
-                dialog.show();
+        dialogNoteItem.show();
                 /**
                 AlertDialog.Builder dialogDelete = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Delete")
                         .setMessage("  delete -" +  "- ?")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(DialogInterface dialogNoteItem, int which) {
 
-                                Dialog dialog = new Dialog(Activity.this);
-                                dialog.setContentView(R.layout.list)
+                                Dialog dialogNoteItem = new Dialog(Activity.this);
+                                dialogNoteItem.setContentView(R.layout.list)
 
 
 
@@ -437,7 +426,7 @@ public void newCreate(){
 
         });
         if ( notes != null && notes.size() > 0) { //check if we have any notes!
-            final NoteAdapter na = new NoteAdapter(this, R.layout.view_note_item, notes);
+            final NoteAdapter na = new NoteAdapter(this, R.layout.view_note_item_text, notes);
             mListNotes.setAdapter(na);
 
             //set click listener for items in the list, by clicking each item the note should be loaded into NoteActivity

@@ -3,22 +3,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@drawable/shadow_all"
-
-
+    android:background="@drawable/bg_shadow_rounded_8dp"
 
 
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@drawable/hard_rounded_corners"
-
-
-        >
 
         <TextView
             android:layout_width="match_parent"
@@ -27,6 +16,7 @@
             android:text="Options"
             android:textSize="25sp"
             android:textColor="@color/colorPrimaryDark"
+            android:padding="5dp"
                 />
 
     <ListView
@@ -35,8 +25,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/lv_target"
             android:background="@android:color/transparent"
+
             />
-    </LinearLayout>
 
 
 
