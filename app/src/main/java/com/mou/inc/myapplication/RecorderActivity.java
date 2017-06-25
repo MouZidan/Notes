@@ -32,7 +32,6 @@ public class RecorderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recorder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         final Chronometer chronometer=(Chronometer)findViewById(R.id.recorder_chronometer);
         chronometer.setFormat("%s");
 
