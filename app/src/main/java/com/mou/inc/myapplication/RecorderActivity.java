@@ -36,7 +36,6 @@ public class RecorderActivity extends AppCompatActivity {
         final Chronometer chronometer=(Chronometer)findViewById(R.id.recorder_chronometer);
         chronometer.setFormat("%s");
 
-
         ImageButton recordBtn=(ImageButton)findViewById(R.id.recrod_button);
         recordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
