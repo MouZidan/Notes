@@ -22,7 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="40dp"
-            android:format="HH:MM:SS"
             android:layout_weight="1" />
 
 
