@@ -16,19 +16,22 @@
 
 
     <ListView
-        android:padding="10dp"
 
         android:id="@+id/create_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:headerDividersEnabled="true"
+        android:state_window_focused="false"
         android:divider="@null"
         android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
 
-   />
+
+        />
 
 
         <TextView
+            android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create."

@@ -4,7 +4,6 @@
     <color name="colorPrimaryOff">#e0e0e0</color>
 
     <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#263238</color>
 
 
     <color name="atColor">#4db6ac</color>
@@ -12,7 +11,6 @@
 
 
     <color name="colorPrimaryNight">#212121</color>
-    <color name="background_material_light">#263238</color>
     <color name="primary_text_default_material_light">#000000</color>
 
     <color name="holo_orange_dark">#bf360c</color>
@@ -21,7 +19,13 @@
     <color name="holo_red_dark">#960d0d</color>
 
     <color name="colorSuggMenuBG">#96607d8b</color>
-    <color name="colorSuggMenuText">#212121</color>
+    <color name="colorSuggMenuText">#ffffff</color>
+
+    
+    <color name="adapterIcColor">#019587</color>
+    <color name="colorAccent">#019587</color>
+
+
 
 
 

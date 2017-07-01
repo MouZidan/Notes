@@ -96,6 +96,7 @@ android:id="@+id/linearLayout"
             android:background="@drawable/rounded_cornersbottom"
             android:ems="10"
             android:gravity="top"
+            android:scrollbars="vertical"
             android:textSize="16sp"
             android:hint="Enter your note..."
             android:inputType="textMultiLine" />
@@ -326,7 +327,8 @@ android:id="@+id/linearLayout"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_margin="5dp"
-            android:background="@drawable/bg_shadow_rounded_8dp"
+            android:elevation="5dp"
+            android:background="@color/colorAccent"
             android:orientation="vertical"
             app:layout_anchor="@+id/fab_frame">
 
@@ -334,17 +336,21 @@ android:id="@+id/linearLayout"
             <TextView
 
                 android:id="@+id/placeSug"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="Place"
+                android:layout_margin="3dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:textColor="@color/colorSuggMenuText" />
 
             <TextView
                 android:id="@+id/personSug"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
+                android:layout_margin="3dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:text="Person"
                 android:textColor="@color/colorSuggMenuText"
 
@@ -352,9 +358,11 @@ android:id="@+id/linearLayout"
 
             <TextView
                 android:id="@+id/currentDateSug"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
+                android:layout_margin="3dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:text="Current date"
                 android:textColor="@color/colorSuggMenuText"
 

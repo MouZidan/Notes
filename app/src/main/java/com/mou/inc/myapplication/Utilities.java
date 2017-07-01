@@ -72,7 +72,6 @@ public class Utilities {
 
         File filesDir = context.getFilesDir();
         ArrayList<String> noteFiles = new ArrayList<>();
-        List<String> customThing=new ArrayList<String>();
         String file0 = "";
 
         //add .bin files to the noteFiles list
@@ -106,9 +105,9 @@ public class Utilities {
 
     /**
      * Loads a note file by its name
-     * @param context Application's context
-     * @param fileName Name of the note file
-     * @return A Note object, null if something goes wrong!
+     * context = Application's context
+     *  fileName = Name of the note file
+     * return A Note object, null if something goes wrong!
      */
     public static Note getNoteByFileName(Context context, String fileName) {
 
@@ -147,30 +146,7 @@ public class Utilities {
 
 
 
-   /* private void copyDataBase() throws IOException {
-
-        // Open your local db as the input stream
-        InputStream myInput = new FileInputStream(filePath + fileNameWithExtension);
-
-        // Path to the just created empty db
-        String outFileName = OUTPUT_PATH + "/" + FILE_NAME;
-
-        // Open the empty db as the output stream
-        new File(outFileName).createNewFile();
-        OutputStream myOutput = new FileOutputStream(outFileName);
-
-        // transfer bytes from the inputfile to the outputfile
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = myInput.read(buffer)) > 0) {
-            myOutput.write(buffer, 0, length);
-        }
-
-        // Close the streams
-        myOutput.flush();
-        myOutput.close();
-        myInput.close();
-    }*/
+  
 
 
 

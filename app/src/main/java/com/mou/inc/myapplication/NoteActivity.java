@@ -72,6 +72,7 @@ import java.util.regex.Pattern;
 
 public class NoteActivity extends AppCompatActivity {
 
+    private static final String TAG ="NoteActivity" ;
     private boolean mIsViewingOrUpdating;
     private long mNoteCreationTime;
     private String mFileName;
@@ -145,7 +146,7 @@ private int counter0=-1;
         setContentView(R.layout.activity_note);
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.background_material_light));
+        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
         resumed=true;
 
 
@@ -154,7 +155,10 @@ private int counter0=-1;
         mAlignmentBoolean = false;
         mNightBoolean = false;
         mEditable = true;
+        mType=Note.TEXT;
 
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
 
         //check if view/edit note bundle is set, otherwise user wants to create new note
         mFileName = getIntent().getStringExtra(Utilities.EXTRAS_NOTE_FILENAME);
@@ -171,8 +175,9 @@ private int counter0=-1;
                 mEditable = (mLoadedNote.getReadable());
                 mType=mLoadedNote.getType();
 
-
                 mNoteCreationTime = mLoadedNote.getDateTime();
+                Log.d(TAG, "onCreate: "+mNoteCreationTime);
+
                 mIsViewingOrUpdating = true;
             }
         } else { //user wants to create a new note
@@ -262,7 +267,6 @@ private int counter0=-1;
 
                     public void onFinish() {
 
-                        final int selectionStartHash = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
                         final int selectionStartAt = mEtContent.getSelectionStart() - mEtContent.getSelectionEnd();
 
                         //do what you wish
@@ -599,7 +603,7 @@ private int counter0=-1;
     }
 
     public void suggMenu(Boolean show){
-        Character atC = null;
+
         final LinearLayout container =(LinearLayout)findViewById(R.id.floatingSM);
 
         final int cursorPosition = mEtContent.getSelectionStart();
@@ -631,21 +635,16 @@ private int counter0=-1;
 
 
 
-            String contentString =mEtContent.getText().toString();
-
-            atC =contentString.charAt(mEtContent.getSelectionStart()-1);
-
-            StringBuilder myName = new StringBuilder(contentString);
 
 
 
 
 
-            final Character finalAtC = atC;
+
+
             place.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String contentString =mEtContent.getText().toString();
 
                     String suggested ="Place:";
 
@@ -660,7 +659,6 @@ private int counter0=-1;
             person.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String contentString =mEtContent.getText().toString();
 
                     String suggested ="Person:";
 
@@ -674,7 +672,6 @@ private int counter0=-1;
             currentDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String contentString =mEtContent.getText().toString();
 
                     String suggested =currentDateTimeString();
 
@@ -788,7 +785,7 @@ private int counter0=-1;
 
 
         if(mLoadedNote!=null) {
-            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + "\" " + mEtTitle.getText() + " \" Note" + "</font>"));
+            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + "\" " + mEtTitle.getText() + " \"" + "</font>"));
         }else{            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + ""  + "</font>"));
         }
 
@@ -816,7 +813,6 @@ private int counter0=-1;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
        //define
-        EditText etContent = (EditText) findViewById(R.id.note_et_content);
 
         switch (item.getItemId()) {
 
@@ -1023,37 +1019,9 @@ private int counter0=-1;
                 String firsttime = "Change your PIN.";
                 alert.showDialog(this, firsttime);}
     }
-public void getUrlText() throws IOException {
-    final String[] fullString = {""};
 
-    Thread t = new Thread() {
-        public void run() {
-            try {
-                URL url = new URL("https://en.wikipedia.org/wiki/George_Calvert,_1st_Baron_Baltimore");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    fullString[0] += line;
-                }
 
-                reader.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-    t.start();
-    runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-
-            mEtContent.setText(fullString[0]);
-
-        }
-    });
-
-}
     public void bottomSheetClick(){
         ImageButton selectAll =(ImageButton)findViewById(R.id.select_all_bs);
         ImageButton copy =(ImageButton)findViewById(R.id.copy_bs);
@@ -1220,11 +1188,11 @@ public void getUrlText() throws IOException {
         getUserAction.setCancelable(true);
         getUserAction.setContentView(R.layout.share_action_dialog);
 
-        final String theWholeNote =
+       /* final String theWholeNote =
                 mEtTitle.getText().toString()
                         + "\n -------------- \n"
                         + mEtContent.getText().toString();
-
+*/
         final Button selectedOnly=(Button)getUserAction.findViewById(R.id.share_action_dialog_selectedTextAction);
         final Button wholeNote=(Button)getUserAction.findViewById(R.id.share_action_dialog_noteAction);
 
@@ -1426,17 +1394,6 @@ public void getUrlText() throws IOException {
 
 
 
-    private void setOnFocusChangeListener(TextView textView, String name){
-        setOnFocusChangeListener(mEtContent, "name");
-
-        textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    Toast.makeText(NoteActivity.this, "name", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
 
 
@@ -1501,10 +1458,6 @@ return currentDateTimeString;
 
     public void SetAlarm(Context c, long AlarmTime, int ItemID, String Message, Boolean Set) {
         Calendar calendar = Calendar.getInstance();
-/**if some thing true**/
-       /* calendar.set(Calendar.MONTH, month); //int
-        calendar.set(Calendar.YEAR, 2013); //int
-        calendar.set(Calendar.DAY_OF_MONTH, 13); //int*/
 
         calendar.set(Calendar.HOUR_OF_DAY, 20); //int
         calendar.set(Calendar.MINUTE, 48); //int
@@ -1602,11 +1555,13 @@ return currentDateTimeString;
 
         String hashtags =mHashtags;
         int type =mType;
+        String path=null;
+        String filaName=null;
 
 
 
 
-        //see if user has entered anything :D lol
+
         if(title.isEmpty()) { //title
             Toast.makeText(NoteActivity.this, "please enter a title!"
                     , Toast.LENGTH_SHORT).show();
@@ -1621,12 +1576,12 @@ return currentDateTimeString;
 
         //set the creation time, if new note, now, otherwise the loaded note's creation time
         if(mLoadedNote != null) {
-            mNoteCreationTime = mLoadedNote.getDateTime();
+            mNoteCreationTime =mLoadedNote.getDateTime();
         } else {
             mNoteCreationTime = System.currentTimeMillis();
         }
         //finally save the note!
-        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags, editable, type))) { //success!
+        if(Utilities.saveNote(this, new Note(mNoteCreationTime, title, content, night,alignment , pinActiveS ,pinString,hashtags, editable, type, path, filaName))) { //success!
             //tell user the note was saved!
             Toast.makeText(this, "note has been saved", Toast.LENGTH_SHORT).show();
         } else { //failed to save the note! but this should not really happen :P :D :|
@@ -1700,12 +1655,12 @@ return currentDateTimeString;
         mEtContent.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         mEtTitle.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         mEtTitle.setBackgroundResource(R.drawable.rounded_cornerstop);
-        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.background_material_light));
         mMenu.setMenuButtonColorNormal(Color.TRANSPARENT);
         mMenu.setMenuButtonColorPressed(Color.TRANSPARENT);
         mMenu.animate().alpha(1f).setDuration(1000);
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.background_material_light));
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.background_material_light));
+        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
 
 
     }
@@ -1743,7 +1698,6 @@ return currentDateTimeString;
             final EditText etRContent = (EditText) Rdialog.findViewById(R.id.notify_title_content);
 
 
-            final Boolean[] allIsOk = new Boolean[1];
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 timePickerHour = timePicker.getHour();
                 timePickerMinute = timePicker.getMinute();
@@ -1958,7 +1912,6 @@ return currentDateTimeString;
             EditText getPIN = (EditText) cdialog.findViewById(R.id.the_PIN);
             Button backBtn = (Button) cdialog.findViewById(R.id.back_btn_checkdialog);
 
-            String PIN = getPIN.getText().toString();
 
             if(mActivatePIN == false){
 

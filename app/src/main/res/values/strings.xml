@@ -11,5 +11,5 @@
         ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis viverra rhoncus sit amet
         nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec tortor.
     </string>
-    <string name="title_activity_recorder">RecorderActivity</string>
+    <string name="title_activity_recorder">Audio Note recorder</string>
 </resources>

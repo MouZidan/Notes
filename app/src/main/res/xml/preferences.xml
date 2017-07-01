@@ -11,33 +11,17 @@
 
 
     <EditTextPreference
-        android:key="userName"
+        android:key="uInput0"
         android:title="Name your NoteBook"
-        android:summary="Shown in ActionBar, Empty equals default name."
+        android:summary="Appears in ActionBar, Empty equals app name."
         android:maxLength="15"
         android:defaultValue=""
 
         />
 
-        />
-
-    <PreferenceScreen
-        android:title="Runtime commands"
-
-        android:summary="Customize your Runtime commands."
 
 
-        >
 
-        <EditTextPreference
-            android:key="insert_time_command"
-            android:title="Insert Date/time Command, all commands starts with [space+.]."
-            android:maxLength="15"
-            android:defaultValue="cDAT"
-        />
-
-
-    </PreferenceScreen>
 
 </PreferenceScreen>
 

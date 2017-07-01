@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
@@ -8,12 +9,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@drawable/texture_bg"
+    android:background="@color/colorPrimaryOff"
     android:orientation="vertical"
     tools:context="com.mou.inc.myapplication.MainActivity"
 
 
-    >
+    android:baselineAligned="false">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -44,6 +45,7 @@
         android:id="@+id/main_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="@null"
         android:layoutAnimation="@anim/translate_list"
         />
 

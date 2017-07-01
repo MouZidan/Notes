@@ -1,17 +1,20 @@
 package com.mou.inc.myapplication;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +40,8 @@ import java.util.Comparator;
 
 
 public class MainActivity extends AppCompatActivity {
+    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
+
 
     Context mContext;
     private String mFileName;
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static String listviewTitle;
     public static String listviewSummary;
+    public static int clickedPosition;
+
+    public static Object clickedNote;
 
     public static Drawable getResBackground(Drawable resBackground) {
         return resBackground;
@@ -69,7 +77,37 @@ public class MainActivity extends AppCompatActivity {
         mContext = getBaseContext();
         setContentView(R.layout.activity_main);
         NotificationEventReceiver.setupAlarm(getApplicationContext());
+
         getWindow().getAttributes().windowAnimations = R.style.Fade;
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+
+
+
+        mListNotes = (ListView) findViewById(R.id.main_listview);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+        myToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorPrimary));
+
+        String uInput0 =PreferenceManager.getDefaultSharedPreferences(this).getString("uInput0","");
+        if (uInput0.isEmpty())getSupportActionBar().setTitle("Notes");else getSupportActionBar().setTitle(uInput0);
+
+        checkAndroidVersion();
+
+        //function: x^2+x=0
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,18 +131,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            // record the fact that the app has been started at least once
+            // recordAudio the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }
 
 
 
-        mListNotes = (ListView) findViewById(R.id.main_listview);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        myToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.background_material_light));
-        myToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorPrimary));
 
 
 
@@ -197,13 +230,15 @@ public void newCreate(){
     window.setAttributes(lp);
 
 
-    String[] items = new String[]{"Text Note", "Audio Note"};
+    String[] items = new String[]{"Text Note", "Audio Note", "Checklist"};
+    Integer[] icons={R.drawable.ic_text, R.drawable.ic_mic, R.drawable.ic_checklist};
 
-    Integer[] icons={R.drawable.ic_cancel ,R.drawable.ic_pen};
 
     CreateListAdapter adapter = new CreateListAdapter(MainActivity.this , items,icons);
+
     ListView lv =(ListView)newCreate.findViewById(R.id.create_list);
-    final ImageView createIconView =(ImageView)newCreate.findViewById(R.id.image_list_create_dialog);
+    lv.setAdapter(adapter);
+
     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -215,16 +250,18 @@ public void newCreate(){
             if(position==1){
                 Intent i=new Intent(MainActivity.this,RecorderActivity.class);
                 startActivity(i);
-
-
-
-
                 newCreate.cancel();
             }
+
+            if(position==2){
+                Intent i=new Intent(MainActivity.this,ToDoActivity.class);
+                startActivity(i);
+                newCreate.cancel();
+            }
+
         }
     });
 
-    lv.setAdapter(adapter);
 
 
     newCreate.show();
@@ -307,7 +344,7 @@ public void newCreate(){
 
                 String[] options = new String[]{"Delete", "Rename"};
                 int[] optionsIcon = new int[]{R.drawable.ic_cancel ,R.drawable.ic_pen};
-                ListAdapter adapter = new ArrayAdapter<String>(MainActivity.this ,R.layout.view_list_dialog, R.id.textOptions, options);
+                final ListAdapter adapter = new ArrayAdapter<String>(MainActivity.this ,R.layout.view_list_dialog, R.id.textOptions, options);
                 ListView lv =(ListView)dialogNoteItem.findViewById(R.id.lv_target);
 
                 final ImageView oprtionsIcon =(ImageView)dialogNoteItem.findViewById(R.id.imageOptions);
@@ -332,9 +369,9 @@ public void newCreate(){
 
 
 
-                            Dialog renameDialog =new Dialog(MainActivity.this, R.style.CustomDialogHorizontal);
-                            dialogNoteItem.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                            Dialog renameDialog =new Dialog(MainActivity.this, R.style.appCompatDialog);
                             setContentView(R.layout.rename_dialog_mainactivity);
+                            renameDialog.show();
 
 
 
@@ -358,7 +395,10 @@ public void newCreate(){
                                             Utilities.deleteFile(getApplicationContext(), fileName);
 
                                             mListview.animate().cancel();
-                                            Intent i =new Intent(MainActivity.this , MainActivity.class);startActivity(i);//refreshing list
+
+
+                                            Intent i =new Intent(MainActivity.this , MainActivity.class);
+                                            startActivity(i);//refreshing list
                                             overridePendingTransition(0, 0);//canceling layout transition
 
 
@@ -368,7 +408,7 @@ public void newCreate(){
 
                                         }
                                     })
-                                    .setNegativeButton("NO", null); //do nothing on clicking NO button :P
+                                    .setNegativeButton("NO", null);
 
                              dialogDelete.show();
 
@@ -414,7 +454,7 @@ public void newCreate(){
 
                                 overridePendingTransition(0, 0);
 
-                            }
+                            }compare
                         })
                         .setNegativeButton("NO", null); //do nothing on clicking NO button :P
 
@@ -425,6 +465,7 @@ public void newCreate(){
             }
 
         });
+
         if ( notes != null && notes.size() > 0) { //check if we have any notes!
             final NoteAdapter na = new NoteAdapter(this, R.layout.view_note_item_text, notes);
             mListNotes.setAdapter(na);
@@ -433,12 +474,38 @@ public void newCreate(){
             mListNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                    clickedPosition = position;
                     //run the NoteActivity in view/edit mode
                     String fileName = ((Note) mListNotes.getItemAtPosition(position)).getDateTime()
                             + Utilities.FILE_EXTENSION;
-                    Intent viewNoteIntent = new Intent(getApplicationContext(), NoteActivity.class);
-                    viewNoteIntent.putExtra(Utilities.EXTRAS_NOTE_FILENAME, fileName);
-                    startActivity(viewNoteIntent);
+                    int noteType = ((Note) mListview.getItemAtPosition(position)).getType();
+
+
+                    if (noteType==Note.AUDIO){
+                        Log.d("MainActivity", "fileType : AUDIO ");
+
+
+                        clickedNote =(mListview.getItemAtPosition(position));
+
+
+
+                        Intent i=new Intent(MainActivity.this,PlayAudioActivity.class);
+                        startActivity(i);
+
+
+                    }else if(noteType==Note.TEXT){
+
+                        Intent viewNoteIntent = new Intent(getApplicationContext(), NoteActivity.class);
+                        viewNoteIntent.putExtra(Utilities.EXTRAS_NOTE_FILENAME, fileName);
+                        startActivity(viewNoteIntent);
+                    }else Log.e("MainActivity", "ERORR: unknown note type. ");
+
+
+
+
+
                 }
             });
 
@@ -465,6 +532,49 @@ public void newCreate(){
                 }
             },600);
 
+        }
+    }
+    private void checkAndroidVersion() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+
+        } else {
+            // write your logic here
+        }
+
+    }
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+                .checkSelfPermission(this,
+                        Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale
+                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale
+                            (this, Manifest.permission.RECORD_AUDIO)) {
+
+                Snackbar.make(this.findViewById(android.R.id.content),
+                        "Please Grant Permissions to recordAudio audio,",
+                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                requestPermissions(
+                                        new String[]{Manifest.permission
+                                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                                        PERMISSIONS_MULTIPLE_REQUEST);
+                            }
+                        }).show();
+            } else {
+                requestPermissions(
+                        new String[]{Manifest.permission
+                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                        PERMISSIONS_MULTIPLE_REQUEST);
+            }
+        } else {
+            // write your logic code if permission already granted
         }
     }
 

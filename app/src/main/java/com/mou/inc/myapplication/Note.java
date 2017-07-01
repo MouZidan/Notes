@@ -26,6 +26,9 @@ public class Note implements Serializable {
     private String mPinString;
 
     private String mHashtags;
+    private String mAudioPath;
+    private String mAudioFileName;
+
     private Boolean mReadable;
     private int mType;
 
@@ -34,7 +37,8 @@ public class Note implements Serializable {
 
 
 
-    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags, Boolean readable, int type) {
+    public Note(long dateInMillis, String title, String content, Boolean night,Boolean alignment, Boolean pinActiveS, String pinString,String hashtags, Boolean readable, int type
+            , String audioPath, String audioFileName) {
         mDateTime = dateInMillis;
         mTitle = title;
         mContent = content;
@@ -47,52 +51,21 @@ public class Note implements Serializable {
         mPinR =mPin;
         mType= type;
 
+        mAudioPath=audioPath;
+        mAudioFileName=audioFileName;
+
 
     }
 
 
 
-    public void setDate(int type) {
-        mDateTime = type;
-    }
-
-    public void setDateTime(long dateTime) {
-        mDateTime = dateTime;
-    }
-    public void setTitleR(String title) {
-        mTitle = title;
-    }
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
-    public void setContent(String content) {
-        mContent = content;
-    }
-
-    public void setPinBoolean(Boolean pin) {
-        mPin = pin;
-    }
-    public void setPinString(String pinString) {
-        mPinString = pinString;
-    }
-    public void setNight(Boolean night) {
-        mNight = night;
-    }
-    public void setAlignment(Boolean alignment) {
-        mAlignment = alignment;
-    }
-
-    public  void setHashtags(String hashtags){
-        mHashtags=hashtags;
-    }
-    public void setReadable(Boolean readable) {
-        mReadable = readable;
-    }
 
 
     public long getDateTime() {
-        return mDateTime;
+
+
+            return mDateTime;
+
     }
 
     /**
@@ -130,15 +103,9 @@ public class Note implements Serializable {
 
         return mPinR;
     }
-    public int getType(){
-
-        return mType;
-    }
     public String getPinString() {
         return mPinString;
     }
-
-
     public String getHashtags() {
         return mHashtags;
     }
@@ -146,6 +113,19 @@ public class Note implements Serializable {
 
     public Boolean getReadable() {
         return mReadable;
+    }
+
+
+    public int getType(){
+
+        return mType;
+    }
+    public String getAudioFileName(){
+        return mAudioFileName;
+    }
+
+    public String getAudioPath(){
+        return mAudioPath;
     }
 
 }

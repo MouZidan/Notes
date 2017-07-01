@@ -1,33 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:id="@+id/activity_recorder_main_layout"
     tools:context="com.mou.inc.myapplication.RecorderActivity">
 
-    <android.support.design.widget.AppBarLayout
+
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:orientation="vertical"
+        android:gravity="center"
+        android:animateLayoutChanges="true"
+        android:id="@+id/audio_note_recorder_layout"
+        android:layout_gravity="center"
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        >
 
-    </android.support.design.widget.AppBarLayout>
+        <Chronometer
+            android:id="@+id/recorder_chronometer"
 
-    <include layout="@layout/content_recorder" />
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="40sp" />
+        <ImageButton
+            android:layout_margin="40dp"
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+            android:id="@+id/record_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:background="@android:color/transparent"
+            android:src="@drawable/circle_red" />
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/audio_note_player_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:animateLayoutChanges="true"
+        android:gravity="center_vertical"
 
-</android.support.design.widget.CoordinatorLayout>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/play_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="20dp"
+
+            android:background="@drawable/ic_play_audio" />
+
+        <SeekBar
+            android:id="@+id/audio_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        android:id="@+id/audio_note_info_layout"
+        android:background="@color/colorPrimaryOff"
+        >
+
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_audio_note_title"
+            android:layout_margin="5dp"
+            android:hint="Enter your title here..."
+            android:maxLength="20"
+            android:maxLines="1"
+            android:padding="10dp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_audio_note_description"
+            android:layout_margin="5dp"
+            android:ems="10"
+            android:lines="4"
+            android:gravity="top"
+            android:maxLength="400"
+            android:hint="Enter a description (optional)..."
+
+            />
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/user_choose_audio_note"
+            android:gravity="center"
+            android:layout_gravity="bottom|right"
+            >
+
+            <Button
+                android:text="DISCARD"
+                android:id="@+id/discard_audio_note_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+
+                android:textAppearance="@android:style/TextAppearance.Material.Button"
+
+                />
+            <Button
+                android:text="SAVE"
+                android:id="@+id/save_audio_note_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+
+                android:textAppearance="@android:style/TextAppearance.Material.Button"
+
+                />
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
